@@ -2,6 +2,7 @@ package com.dao.mymovies.features.search.paging
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.dao.mymovies.R
 import com.dao.mymovies.data.repository.MoviesRepository
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.network.NetworkState
@@ -31,12 +32,16 @@ class SearchPageKeyedDataSource @Inject constructor(
             if(response.isSuccessful)
             {
                 response.body()?.let { search ->
-                    callback.onResult(response.body()?.results ?: emptyList(), search.page, search.totalPages)
-
+                    val limits = pagination(search)
+                    callback.onResult(search.results.filter { filter(it) }, limits["prev"], limits["next"])
                 }
-            }
 
-            networkState.postValue(NetworkState.SUCCESS)
+                networkState.postValue(NetworkState.SUCCESS)
+            }
+            else
+            {
+                networkState.postValue(NetworkState.error(R.string.app_internal_error_client))
+            }
         }
 
         val error: Consumer<Throwable> = Consumer {
@@ -44,7 +49,7 @@ class SearchPageKeyedDataSource @Inject constructor(
         }
 
         val disposable = repository
-                .search(query)
+                .search(query, 1)
                 .doOnSubscribe { networkState.postValue(NetworkState.RUNNING) }
                 .compose(schedulerProvider.applySchedulers())
                 .subscribe(consumer, error)
@@ -55,8 +60,19 @@ class SearchPageKeyedDataSource @Inject constructor(
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>)
     {
         val consumer: Consumer<Response<SearchResult>> = Consumer { response ->
-            callback.onResult(response.body()?.results ?: emptyList(), params.requestedLoadSize)
-            networkState.postValue(NetworkState.SUCCESS)
+            if(response.isSuccessful)
+            {
+                response.body()?.let { search ->
+                    val limits = pagination(search)
+                    callback.onResult(search.results.filter { filter(it) }, limits["next"])
+                }
+
+                networkState.postValue(NetworkState.SUCCESS)
+            }
+            else
+            {
+                networkState.postValue(NetworkState.error(R.string.app_internal_error_client))
+            }
         }
 
         val error: Consumer<Throwable> = Consumer {
@@ -64,7 +80,7 @@ class SearchPageKeyedDataSource @Inject constructor(
         }
 
         val disposable = repository
-                .search(query, params.requestedLoadSize)
+                .search(query, params.key)
                 .doOnSubscribe { networkState.postValue(NetworkState.RUNNING) }
                 .compose(schedulerProvider.applySchedulers()).subscribe(consumer, error)
 
@@ -74,5 +90,22 @@ class SearchPageKeyedDataSource @Inject constructor(
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>)
     {
         /* not implemented */
+    }
+
+    private fun pagination(search: SearchResult): Map<String, Int?>
+    {
+        val limits = mutableMapOf("prev" to search.page, "next" to null)
+
+        if(search.totalPages > search.page) {
+            limits["next"] = (search.page + 1)
+        }
+
+        return limits
+    }
+
+    private fun filter(movie: Movie): Boolean
+    {
+        return (movie.title.isNotEmpty() && movie.title.isNotEmpty()) &&
+                (movie.overView.isNotEmpty() && movie.overView.isNotBlank())
     }
 }

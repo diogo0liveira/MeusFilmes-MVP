@@ -20,7 +20,7 @@ class SearchMoviesPresenter (repository: MoviesRepository) : SearchMoviesInterac
     private val composite: CompositeDisposable = CompositeDisposable()
 
     private val query = MutableLiveData<String>()
-    private val search = map(query) { repository.search1(it, 1) }
+    private val search = map(query) { repository.search(it) }
     private val searchObserver: LiveData<PagedList<Movie>> = switchMap(search) { it }
 
     override fun initialize(view: SearchMoviesInteractor.View)

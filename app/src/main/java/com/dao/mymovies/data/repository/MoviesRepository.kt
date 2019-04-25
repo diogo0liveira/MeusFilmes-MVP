@@ -18,7 +18,6 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import retrofit2.Response
-import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,20 +42,13 @@ class MoviesRepository @Inject constructor(
 
     fun isFavorite(movie: Movie): Flowable<Boolean> = local.isFavorite(movie)
 
-    fun search1(query: String, page: Int): LiveData<PagedList<Movie>>
+    fun search(query: String): LiveData<PagedList<Movie>>
     {
         val factory = SearchDataSourceFactory(query, composite, schedulerProvider, this)
-
-        val config = PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
-                .setPageSize(page).build()
-
-        val paged = LivePagedListBuilder(factory, config)
-                .setFetchExecutor(Executors.newFixedThreadPool(5))
-                .build()
+        val config = PagedList.Config.Builder().setPageSize(15).build()
+        val paged = LivePagedListBuilder(factory, config).build()
 
         val networkState = switchMap(factory.source) { it.networkState }
-
         return paged
     }
 

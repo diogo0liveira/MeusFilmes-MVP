@@ -29,7 +29,7 @@ fun visible(view: View, visible: Boolean)
 fun date(view: TextView, text: String?, date: Date?)
 {
     var message = date.toString()
-//    date?.let { message = DateTime.dateFormatMedium(it) }
+    date?.let { message = DateTime.dateFormatLong(it) }
 
     if(!text.isNullOrEmpty())
     {

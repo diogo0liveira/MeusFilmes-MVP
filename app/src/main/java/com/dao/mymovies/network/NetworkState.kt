@@ -1,5 +1,8 @@
 package com.dao.mymovies.network
 
+import androidx.annotation.StringRes
+import com.dao.mymovies.R
+
 /**
  * Created in 02/04/19 12:06.
  *
@@ -10,12 +13,17 @@ enum class State
     RUNNING, SUCCESS, FAILED
 }
 
-data class NetworkState constructor(val status: State, val message: String? = null, val retry: (() -> Unit)? = null)
+data class NetworkState constructor(
+        val status: State,
+        val message: String? = null,
+        val messageRes: Int = R.string.app_internal_error_client,
+        val retry: (() -> Unit)? = null)
 {
     companion object
     {
         val RUNNING = NetworkState(State.RUNNING)
         val SUCCESS = NetworkState(State.SUCCESS)
-        fun error(message: String?, retry: (() -> Unit)? = null) = NetworkState(State.FAILED, message, retry)
+        fun error(message: String?, retry: (() -> Unit)? = null) = NetworkState(State.FAILED, message, retry = retry)
+        fun error(@StringRes message: Int, retry: (() -> Unit)? = null) = NetworkState(State.FAILED, messageRes = message, retry = retry)
     }
 }

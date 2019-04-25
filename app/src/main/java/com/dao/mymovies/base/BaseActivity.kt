@@ -36,10 +36,7 @@ open class BaseActivity : AppCompatActivity()
     protected fun notifyDisconnected(anchor: View, block: () -> Unit)
     {
         snackOffline = Snackbar.make(anchor, R.string.app_internal_no_connection, Snackbar.LENGTH_INDEFINITE)
-
-        snackOffline?.run {
-            setAction(R.string.retry) { block() }.show()
-        }
+        snackOffline?.run { setAction(R.string.retry) { block() }.show() }
     }
 
     protected fun removeNotifyDisconnected()

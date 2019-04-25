@@ -45,7 +45,7 @@ class Recycler
 
         fun clean()
         {
-            currentList?.clear()
+            submitList(null)
         }
 
         private inner class AdapterDataObserver : RecyclerView.AdapterDataObserver()

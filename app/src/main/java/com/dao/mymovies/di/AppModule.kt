@@ -15,7 +15,6 @@ import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import java.text.DateFormat
 import java.util.*
 import javax.inject.Singleton
 
@@ -46,7 +45,6 @@ class AppModule
     @Provides
     @Singleton
     fun provideGson(): Gson = GsonBuilder()
-            .setDateFormat("dd/MM/yyyy")
             .registerTypeAdapter(Date::class.java, DateDeserializer())
             .create()
 }

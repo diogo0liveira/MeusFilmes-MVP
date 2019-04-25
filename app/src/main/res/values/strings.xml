@@ -12,7 +12,7 @@
     <string name="empty_list_my_movies">Adicione seu filmes favoritos</string>
     <string name="empty_list_search_movies">nenhum resultado</string>
 
-    <string name="movie_detail_release_date">RELEASE DATE %1$s</string>
+    <string name="movie_detail_release_date">Lançando em %1$s</string>
     <string name="movie_detail_not_found">filme não localizado</string>
 
     <string name="menu_order_title">ordenar por</string>

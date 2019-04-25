@@ -1,5 +1,6 @@
 package com.dao.mymovies.util
 
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -9,23 +10,21 @@ import java.util.*
  * @author Diogo Oliveira.
  */
 private const val PATTERN_PARSER = "yyyy-MM-dd"
-private const val DATE_MEDIUM = "dd/MM/yyyy"
 
 object DateTime
 {
-    private val formatter = SimpleDateFormat(PATTERN_PARSER, Locale.ENGLISH)
+    private val parser = SimpleDateFormat(PATTERN_PARSER, Locale.ENGLISH)
+    private val formatter = DateFormat.getDateInstance(DateFormat.LONG)
 
     @JvmStatic
     fun parse(date: String): Date
     {
-        formatter.applyPattern(PATTERN_PARSER)
-        return formatter.parse(date)
+        return parser.parse(date)
     }
 
     @JvmStatic
-    fun dateFormatMedium(date: Date): String
+    fun dateFormatLong(date: Date): String
     {
-        formatter.applyPattern(DATE_MEDIUM)
         return formatter.format(date)
     }
 }

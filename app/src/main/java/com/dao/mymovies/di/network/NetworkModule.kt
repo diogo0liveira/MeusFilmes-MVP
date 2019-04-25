@@ -4,6 +4,7 @@ import android.content.Context
 import com.dao.mymovies.BuildConfig
 import com.dao.mymovies.TheMovieApi
 import com.dao.mymovies.network.TheMovies
+import com.dao.mymovies.network.interceptor.TheMoviesInterceptor
 import com.dao.mymovies.network.interceptor.TokenRequestInterceptor
 import com.google.gson.Gson
 import dagger.Module
@@ -43,6 +44,7 @@ class NetworkModule
             OkHttpClient
                     .Builder()
                     .addInterceptor(TokenRequestInterceptor())
+                    .addInterceptor(TheMoviesInterceptor())
                     .addNetworkInterceptor(interceptor)
                     .cache(cache)
                     .build()
