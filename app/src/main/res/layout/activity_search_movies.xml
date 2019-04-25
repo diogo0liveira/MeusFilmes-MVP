@@ -5,6 +5,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable name="showProgressPagination" type="boolean"/>
+    </data>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/anchor"
         android:layout_width="match_parent"
@@ -25,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:visibility="gone"
+            app:visible="@{showProgressPagination}"
             tools:visibility="visible"/>
 
         <ViewStub

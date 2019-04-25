@@ -2,6 +2,7 @@ package com.dao.mymovies.features.search
 
 import com.dao.mymovies.data.repository.MoviesRepository
 import com.dao.mymovies.di.annotations.ActivityScoped
+import com.dao.mymovies.util.SchedulerProvider
 import dagger.Module
 import dagger.Provides
 
@@ -15,8 +16,8 @@ class SearchMoviesModule
 {
     @Provides
     @ActivityScoped
-    fun provideSearchMoviesPresenter(repository: MoviesRepository): SearchMoviesInteractor.Presenter
+    fun provideSearchMoviesPresenter(repository: MoviesRepository, schedulerProvider: SchedulerProvider): SearchMoviesInteractor.Presenter
     {
-        return SearchMoviesPresenter(repository)
+        return SearchMoviesPresenter(repository, schedulerProvider)
     }
 }

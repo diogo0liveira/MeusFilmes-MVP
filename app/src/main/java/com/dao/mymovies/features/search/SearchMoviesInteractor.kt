@@ -7,6 +7,7 @@ import androidx.paging.PagedList
 import com.dao.mymovies.base.mvp.IPresenter
 import com.dao.mymovies.base.mvp.IView
 import com.dao.mymovies.model.Movie
+import com.dao.mymovies.network.NetworkState
 import com.dao.mymovies.util.annotation.Duration
 
 /**
@@ -20,15 +21,15 @@ interface SearchMoviesInteractor
     {
         fun context(): Context
 
-        fun changeSearchProgress(visible: Boolean)
-
-        fun changePaginationProgress(visible: Boolean)
+        fun networkStateObserver(observable: LiveData<NetworkState>)
 
         fun showToast(@StringRes text: Int, @Duration duration: Int)
     }
 
     interface Presenter : IPresenter<View>
     {
+        fun networkStateObserver(): LiveData<NetworkState>?
+
         fun searchObserver(): LiveData<PagedList<Movie>>
 
         fun searchMovies(query: String)

@@ -6,11 +6,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dao.mymovies.Extras.MOVIE
@@ -23,6 +23,7 @@ import com.dao.mymovies.databinding.ViewEmptySearchMoviesBinding
 import com.dao.mymovies.features.detail.MovieDetailActivity
 import com.dao.mymovies.features.list.MyMoviesAdapter
 import com.dao.mymovies.model.Movie
+import com.dao.mymovies.network.NetworkState
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.toast
@@ -67,8 +68,6 @@ class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View, OnColl
             override fun onQueryTextSubmit(query: String?): Boolean
             {
                 query?.let {
-                    helperEmpty.visible = true
-                    helperEmpty.showProgressBar = true
                     presenter.searchMovies(it)
                     searchView.clearFocus()
                 }
@@ -146,13 +145,6 @@ class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View, OnColl
         presenter.searchObserver().observe(this, Observer { adapter.submitList(it) })
     }
 
-    override fun onCollectionChanged(isEmpty: Boolean)
-    {
-        helperEmpty.visible = isEmpty
-        helperEmpty.showProgressBar = false
-        helper.progressPagination.visibility = View.GONE
-    }
-
     override fun onMovieViewOnClick(movie: Movie)
     {
         startActivityForResult<MovieDetailActivity>(REQUEST_DETAIL_MOVIE, Pair(MOVIE, movie))
@@ -167,14 +159,39 @@ class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View, OnColl
         }
     }
 
-    override fun changeSearchProgress(visible: Boolean)
+    override fun onCollectionChanged(isEmpty: Boolean)
     {
-        helperEmpty.visible = visible
-        helperEmpty.showProgressBar = visible
+        helperEmpty.visible = isEmpty
+        helperEmpty.showProgressBar = isEmpty
+        helper.showProgressPagination = isEmpty
     }
 
-    override fun changePaginationProgress(visible: Boolean)
+    override fun networkStateObserver(observable: LiveData<NetworkState>)
     {
-        helper.progressPagination.visibility = (if(visible) View.VISIBLE else View.GONE)
+        observable.observe(this, Observer {
+            when(it)
+            {
+                NetworkState.RUNNING ->
+                {
+                    if(adapter.itemCount == 0)
+                    {
+                        helperEmpty.showProgressBar = true
+                    }
+                    else
+                    {
+                        helper.showProgressPagination = true
+                    }
+                }
+                NetworkState.SUCCESS ->
+                {
+                    helperEmpty.showProgressBar = false
+                    helper.showProgressPagination = false
+                }
+                else ->
+                {
+                    showToast(it.messageRes, Toast.LENGTH_LONG)
+                }
+            }
+        })
     }
 }

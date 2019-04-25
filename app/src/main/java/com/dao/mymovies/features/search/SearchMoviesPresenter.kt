@@ -4,9 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.Transformations.switchMap
+import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.dao.mymovies.data.repository.MoviesRepository
+import com.dao.mymovies.features.search.paging.SearchDataSourceFactory
 import com.dao.mymovies.model.Movie
+import com.dao.mymovies.network.NetworkState
+import com.dao.mymovies.util.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -14,19 +18,27 @@ import io.reactivex.disposables.CompositeDisposable
  *
  * @author Diogo Oliveira.
  */
-class SearchMoviesPresenter (repository: MoviesRepository) : SearchMoviesInteractor.Presenter
+class SearchMoviesPresenter(
+        private val repository: MoviesRepository,
+        private val schedulerProvider: SchedulerProvider) : SearchMoviesInteractor.Presenter
 {
     private lateinit var view: SearchMoviesInteractor.View
     private val composite: CompositeDisposable = CompositeDisposable()
 
     private val query = MutableLiveData<String>()
-    private val search = map(query) { repository.search(it) }
+    private val search = map(query) { searchDataSourceFactory(it) }
     private val searchObserver: LiveData<PagedList<Movie>> = switchMap(search) { it }
+    private var networkStateObserver: LiveData<NetworkState>? = null
 
     override fun initialize(view: SearchMoviesInteractor.View)
     {
         this.view = view
         this.view.initializeView()
+    }
+
+    override fun networkStateObserver(): LiveData<NetworkState>?
+    {
+        return networkStateObserver
     }
 
     override fun searchObserver(): LiveData<PagedList<Movie>>
@@ -42,5 +54,15 @@ class SearchMoviesPresenter (repository: MoviesRepository) : SearchMoviesInterac
     override fun terminate()
     {
         composite.clear()
+    }
+
+    private fun searchDataSourceFactory(query: String): LiveData<PagedList<Movie>>
+    {
+        val factory = SearchDataSourceFactory(query, composite, schedulerProvider, repository)
+        val config = PagedList.Config.Builder().setPageSize(30).build()
+        val paged = LivePagedListBuilder<Int, Movie>(factory, config).build()
+
+        view.networkStateObserver(switchMap(factory.source) { it.networkState })
+        return paged
     }
 }

@@ -40,7 +40,9 @@ class SearchPageKeyedDataSource @Inject constructor(
             }
             else
             {
-                networkState.postValue(NetworkState.error(R.string.app_internal_error_client))
+                networkState.postValue(NetworkState.error(R.string.app_internal_no_connection) {
+                    loadInitial(params, callback)
+                })
             }
         }
 
@@ -71,7 +73,9 @@ class SearchPageKeyedDataSource @Inject constructor(
             }
             else
             {
-                networkState.postValue(NetworkState.error(R.string.app_internal_error_client))
+                networkState.postValue(NetworkState.error(R.string.app_internal_no_connection) {
+                    loadAfter(params, callback)
+                })
             }
         }
 
@@ -79,8 +83,7 @@ class SearchPageKeyedDataSource @Inject constructor(
             networkState.postValue(NetworkState.error(it.message) { loadAfter(params, callback) })
         }
 
-        val disposable = repository
-                .search(query, params.key)
+        val disposable = repository.search(query, params.key)
                 .doOnSubscribe { networkState.postValue(NetworkState.RUNNING) }
                 .compose(schedulerProvider.applySchedulers()).subscribe(consumer, error)
 
@@ -94,18 +97,13 @@ class SearchPageKeyedDataSource @Inject constructor(
 
     private fun pagination(search: SearchResult): Map<String, Int?>
     {
-        val limits = mutableMapOf("prev" to search.page, "next" to null)
-
-        if(search.totalPages > search.page) {
-            limits["next"] = (search.page + 1)
-        }
-
-        return limits
+        val next = if(search.totalPages > search.page) (search.page + 1) else null
+        return mutableMapOf("prev" to search.page, "next" to next)
     }
 
     private fun filter(movie: Movie): Boolean
     {
         return (movie.title.isNotEmpty() && movie.title.isNotEmpty()) &&
-                (movie.overView.isNotEmpty() && movie.overView.isNotBlank())
+               (movie.overView.isNotEmpty() && movie.overView.isNotBlank())
     }
 }
