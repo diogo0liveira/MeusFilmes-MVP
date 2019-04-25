@@ -21,9 +21,10 @@ import com.dao.mymovies.base.OnCollectionChangedListener
 import com.dao.mymovies.databinding.ActivitySearchMoviesBinding
 import com.dao.mymovies.databinding.ViewEmptySearchMoviesBinding
 import com.dao.mymovies.features.detail.MovieDetailActivity
-import com.dao.mymovies.features.list.MyMoviesAdapter
+import com.dao.mymovies.features.adapter.MyMoviesAdapter
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.network.NetworkState
+import com.dao.mymovies.network.State
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.toast
@@ -162,16 +163,32 @@ class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View, OnColl
     override fun onCollectionChanged(isEmpty: Boolean)
     {
         helperEmpty.visible = isEmpty
-        helperEmpty.showProgressBar = isEmpty
-        helper.showProgressPagination = isEmpty
+        helperEmpty.showProgressBar = !isEmpty
+        helper.showProgressPagination = !isEmpty
+    }
+
+    override fun executeRequireNetwork(block: () -> Unit)
+    {
+        if(isNetworkConnected())
+        {
+            removeNotifyDisconnected()
+            block()
+        }
+        else
+        {
+            helperEmpty.showProgressBar = false
+            helper.showProgressPagination = false
+            helperEmpty.visible = (adapter.itemCount == 0)
+            notifyDisconnected(helper.anchor) { executeRequireNetwork(block) }
+        }
     }
 
     override fun networkStateObserver(observable: LiveData<NetworkState>)
     {
         observable.observe(this, Observer {
-            when(it)
+            when(it.status)
             {
-                NetworkState.RUNNING ->
+                State.RUNNING ->
                 {
                     if(adapter.itemCount == 0)
                     {
@@ -182,14 +199,14 @@ class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View, OnColl
                         helper.showProgressPagination = true
                     }
                 }
-                NetworkState.SUCCESS ->
+                State.SUCCESS ->
                 {
                     helperEmpty.showProgressBar = false
                     helper.showProgressPagination = false
                 }
-                else ->
+                State.FAILED ->
                 {
-                    showToast(it.messageRes, Toast.LENGTH_LONG)
+                    executeRequireNetwork { it.retry?.invoke() }
                 }
             }
         })

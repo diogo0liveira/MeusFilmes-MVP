@@ -42,9 +42,7 @@ fun date(view: TextView, text: String?, date: Date?)
 @BindingAdapter("cover")
 fun cover(view: ImageView, uri: String?)
 {
-    uri?.let { view.load(TheMovieApi.COVER + uri) } ?: run {
-        view.setImageResource(R.drawable.vd_movie_120dp)
-    }
+    view.load(TheMovieApi.COVER.plus(uri))
 }
 
 @BindingAdapter("favorite")

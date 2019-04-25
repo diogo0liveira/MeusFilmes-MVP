@@ -18,6 +18,7 @@ import com.dao.mymovies.SplashScreen
 import com.dao.mymovies.base.OnCollectionChangedListener
 import com.dao.mymovies.databinding.ActivityMyMoviesBinding
 import com.dao.mymovies.databinding.ViewEmptyMyMoviesBinding
+import com.dao.mymovies.features.adapter.MyMoviesAdapter
 import com.dao.mymovies.features.detail.MovieDetailActivity
 import com.dao.mymovies.features.search.SearchMoviesActivity
 import com.dao.mymovies.model.Movie

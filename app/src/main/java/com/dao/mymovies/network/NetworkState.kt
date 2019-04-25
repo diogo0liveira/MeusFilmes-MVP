@@ -16,7 +16,7 @@ enum class State
 data class NetworkState constructor(
         val status: State,
         val message: String? = null,
-        val messageRes: Int = R.string.app_internal_error_client,
+        val messageRes: Int = R.string.app_internal_server_unavailable,
         val retry: (() -> Unit)? = null)
 {
     companion object

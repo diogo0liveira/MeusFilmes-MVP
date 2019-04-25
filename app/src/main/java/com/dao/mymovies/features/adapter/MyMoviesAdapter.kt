@@ -1,4 +1,4 @@
-package com.dao.mymovies.features.list
+package com.dao.mymovies.features.adapter
 
 import android.content.Context
 import android.view.View
@@ -20,11 +20,6 @@ class MyMoviesAdapter(
         private val listener: MovieViewOnClickListener) :
         Recycler.Adapter<Movie, MyMoviesAdapter.ViewHolder>(context, COMPARATOR)
 {
-    init
-    {
-        setHasStableIds(true)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
     {
          val binding: ViewRowMovieBinding = this.inflate(parent, R.layout.view_row_movie)
@@ -48,7 +43,6 @@ class MyMoviesAdapter(
         {
             listener.onMovieViewOnClick(binding.movie!!)
         }
-
     }
 
     companion object

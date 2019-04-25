@@ -21,6 +21,8 @@ interface SearchMoviesInteractor
     {
         fun context(): Context
 
+        fun executeRequireNetwork(block: () -> Unit)
+
         fun networkStateObserver(observable: LiveData<NetworkState>)
 
         fun showToast(@StringRes text: Int, @Duration duration: Int)

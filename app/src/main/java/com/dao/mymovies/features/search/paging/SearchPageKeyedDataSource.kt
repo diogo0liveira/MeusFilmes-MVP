@@ -40,9 +40,8 @@ class SearchPageKeyedDataSource @Inject constructor(
             }
             else
             {
-                networkState.postValue(NetworkState.error(R.string.app_internal_no_connection) {
-                    loadInitial(params, callback)
-                })
+                networkState.postValue(NetworkState.error(
+                        R.string.app_internal_server_unavailable) { loadInitial(params, callback) })
             }
         }
 
@@ -73,9 +72,8 @@ class SearchPageKeyedDataSource @Inject constructor(
             }
             else
             {
-                networkState.postValue(NetworkState.error(R.string.app_internal_no_connection) {
-                    loadAfter(params, callback)
-                })
+                networkState.postValue(NetworkState.error(
+                        R.string.app_internal_server_unavailable) { loadAfter(params, callback) })
             }
         }
 

@@ -30,7 +30,7 @@ data class Movie(
         @Expose
         @NonNull
         @SerializedName("release_date")
-        var releaseDate: Date,
+        var releaseDate: Date?,
         @Expose
         @NonNull
         @SerializedName("overview")
@@ -43,7 +43,7 @@ data class Movie(
         @Expose(serialize = false, deserialize = false)
         var  isFavorite: Boolean = false) : Parcelable
 {
-        constructor(): this(0, "", Date(), "", "", false)
+        constructor(): this(0, "", null, "", "", false)
 
         override fun toString(): String
         {

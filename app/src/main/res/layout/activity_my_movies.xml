@@ -39,7 +39,7 @@
             android:clickable="true"
             android:layout_gravity="end|bottom"
             android:src="@drawable/vd_add_24dp"
-            android:tint="@android:color/white"
+            app:tint="@android:color/white"
             app:rippleColor="@android:color/white"
             app:layout_anchor="@id/movies_list"
             app:layout_anchorGravity="bottom|end"/>
