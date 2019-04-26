@@ -1,6 +1,7 @@
 package com.dao.mymovies.util.binding
 
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.text.PrecomputedTextCompat
@@ -42,6 +43,12 @@ fun cover(view: ImageView, uri: String?)
 fun favorite(view: FloatingActionButton, favorite: Boolean)
 {
     view.setImageResource(if(favorite) R.drawable.vd_favorite_24dp else R.drawable.vd_not_favorite_24dp)
+}
+
+@BindingAdapter("voteAverage")
+fun voteAverage(view: RatingBar, average: Float)
+{
+    view.rating = (average / 2)
 }
 
 @BindingAdapter("asyncText", "android:textSize", requireAll = false)

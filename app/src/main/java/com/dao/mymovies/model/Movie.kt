@@ -34,6 +34,10 @@ data class Movie(
         var releaseDate: Date?,
         @Expose
         @NonNull
+        @SerializedName("vote_average")
+        var voteAverage: Float,
+        @Expose
+        @NonNull
         @SerializedName("overview")
         var overView: String,
         @Expose
@@ -44,7 +48,7 @@ data class Movie(
         @Expose(serialize = false, deserialize = false)
         var isFavorite: ObservableField<Boolean> = ObservableField(false)) : Parcelable
 {
-        constructor(): this(0, "", null, "", "", ObservableField(false))
+        constructor(): this(0, "", null, 0F, "", "", ObservableField(false))
 
         override fun toString(): String
         {

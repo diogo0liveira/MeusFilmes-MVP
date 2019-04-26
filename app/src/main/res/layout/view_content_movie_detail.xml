@@ -22,11 +22,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:numStars="5"
+                android:stepSize=".1"
+                app:voteAverage="@{movie.voteAverage}"
+                style="?android:attr/ratingBarStyleSmall"
+                tools:rating="2.0"/>
+
             <TextView
                 android:id="@+id/releaseDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:textColor="@android:color/holo_blue_dark"
