@@ -18,9 +18,7 @@ interface MovieDetailInteractor
     {
         fun putOnForm(movie: Movie)
 
-        fun movieSaveSuccess()
-
-        fun movieDeleteSuccess()
+        fun changeMovieFavoriteSuccess()
 
         fun showToast(@StringRes text: Int, @Duration duration: Int)
     }

@@ -8,8 +8,8 @@ import com.dao.mymovies.data.remote.MoviesRemoteDataSource
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.pojo.SearchResult
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -31,7 +31,7 @@ class MoviesRepository @Inject constructor(
 
     fun loadMovies(): DataSource.Factory<Int, Movie> = local.search()
 
-    fun isFavorite(movie: Movie): Flowable<Boolean> = local.isFavorite(movie)
+    fun isFavorite(movie: Movie): Single<Boolean> = local.isFavorite(movie)
 
     override fun search(query: String, page: Int): Observable<Response<SearchResult>> = remote.search(query, page)
 }

@@ -7,7 +7,8 @@ import com.dao.mymovies.data.repository.MoviesRepository
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.network.NetworkState
 import com.dao.mymovies.pojo.SearchResult
-import com.dao.mymovies.util.SchedulerProvider
+import com.dao.mymovies.util.withSchedulers
+import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import retrofit2.Response
@@ -21,7 +22,6 @@ import javax.inject.Inject
 class SearchPageKeyedDataSource @Inject constructor(
         private val query: String,
         private val composite: CompositeDisposable,
-        private val schedulerProvider: SchedulerProvider,
         private val repository: MoviesRepository) : PageKeyedDataSource<Int, Movie>()
 {
     val networkState = MutableLiveData<NetworkState>()
@@ -52,7 +52,7 @@ class SearchPageKeyedDataSource @Inject constructor(
         val disposable = repository
                 .search(query, 1)
                 .doOnSubscribe { networkState.postValue(NetworkState.RUNNING) }
-                .compose(schedulerProvider.applySchedulers())
+                .compose(withSchedulers<ObservableTransformer<Response<SearchResult>, Response<SearchResult>>>())
                 .subscribe(consumer, error)
 
         composite.add(disposable)
@@ -83,7 +83,8 @@ class SearchPageKeyedDataSource @Inject constructor(
 
         val disposable = repository.search(query, params.key)
                 .doOnSubscribe { networkState.postValue(NetworkState.RUNNING) }
-                .compose(schedulerProvider.applySchedulers()).subscribe(consumer, error)
+                .compose(withSchedulers<ObservableTransformer<Response<SearchResult>, Response<SearchResult>>>())
+                .subscribe(consumer, error)
 
         composite.add(disposable)
     }

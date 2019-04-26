@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
         <import type="android.view.View"/>
@@ -17,13 +16,13 @@
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginBottom="68dp"
-        app:visible="@{visible}">
+        android:visibility="@{visible}">
 
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:visible="@{showProgressBar}"/>
+            android:visibility="@{showProgressBar}"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -34,6 +33,6 @@
             android:textColor="#BDBDBD"
             android:textStyle="bold"
             android:enabled="false"
-            app:visible="@{!showProgressBar}"/>
+            android:visibility="@{!showProgressBar}"/>
     </FrameLayout>
 </layout>

@@ -1,6 +1,5 @@
 package com.dao.mymovies.util.binding
 
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
@@ -19,12 +18,6 @@ import java.util.*
  *
  * @author Diogo Oliveira.
  */
-@BindingAdapter("visible")
-fun visible(view: View, visible: Boolean)
-{
-    view.visibility = if(visible) View.VISIBLE else View.GONE
-}
-
 @BindingAdapter(value = ["text", "date"], requireAll = false)
 fun date(view: TextView, text: String?, date: Date?)
 {

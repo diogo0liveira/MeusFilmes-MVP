@@ -10,7 +10,6 @@ import com.dao.mymovies.data.repository.MoviesRepository
 import com.dao.mymovies.features.search.paging.SearchDataSourceFactory
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.network.NetworkState
-import com.dao.mymovies.util.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -20,10 +19,9 @@ import io.reactivex.disposables.CompositeDisposable
  */
 class SearchMoviesPresenter(
         private val repository: MoviesRepository,
-        private val schedulerProvider: SchedulerProvider) : SearchMoviesInteractor.Presenter
+        private val composite: CompositeDisposable) : SearchMoviesInteractor.Presenter
 {
     private lateinit var view: SearchMoviesInteractor.View
-    private val composite: CompositeDisposable = CompositeDisposable()
 
     private val query = MutableLiveData<String>()
     private val search = map(query) { searchDataSourceFactory(it) }
@@ -58,7 +56,7 @@ class SearchMoviesPresenter(
 
     private fun searchDataSourceFactory(query: String): LiveData<PagedList<Movie>>
     {
-        val factory = SearchDataSourceFactory(query, composite, schedulerProvider, repository)
+        val factory = SearchDataSourceFactory(query, composite, repository)
         val config = PagedList.Config.Builder().setPageSize(30).build()
         val paged = LivePagedListBuilder<Int, Movie>(factory, config).build()
 

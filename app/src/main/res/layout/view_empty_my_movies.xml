@@ -2,7 +2,6 @@
 
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="PrivateResource">
 
@@ -19,7 +18,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginBottom="68dp"
         android:orientation="vertical"
-        app:visible="@{visible}">
+        android:visibility="@{visible}">
 
         <TextView
             android:layout_width="wrap_content"

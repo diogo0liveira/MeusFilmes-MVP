@@ -1,7 +1,8 @@
 package com.dao.mymovies.util
 
-import io.reactivex.ObservableTransformer
-import io.reactivex.Scheduler
+import io.reactivex.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 
 /**
@@ -9,14 +10,23 @@ import io.reactivex.Scheduler
  *
  * @author Diogo Oliveira.
  */
-class SchedulerProvider(
-        private val backgroundScheduler: Scheduler,
-        private val foregroundScheduler: Scheduler)
+inline fun <reified T> withSchedulers(): T
 {
-    fun <T> applySchedulers(): ObservableTransformer<T, T>
+    when(T::class)
     {
-        return ObservableTransformer { observable ->
-            observable.subscribeOn(backgroundScheduler).observeOn(foregroundScheduler)
-        }
+        ObservableTransformer::class -> return ObservableTransformer<T, T> {
+            it.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        } as T
+        SingleTransformer::class -> return SingleTransformer<T, T> {
+            it.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        } as T
+        FlowableTransformer::class -> return FlowableTransformer<T, T> {
+            it.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        } as T
+        CompletableTransformer::class -> return CompletableTransformer {
+            it.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        } as T
     }
+
+    throw IllegalArgumentException("not a valid Transformer type")
 }

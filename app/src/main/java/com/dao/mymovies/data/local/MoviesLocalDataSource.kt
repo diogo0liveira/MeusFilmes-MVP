@@ -4,7 +4,7 @@ import androidx.paging.DataSource
 import com.dao.mymovies.data.local.dao.MovieDAO
 import com.dao.mymovies.model.Movie
 import io.reactivex.Completable
-import io.reactivex.Flowable
+import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,7 +20,7 @@ class MoviesLocalDataSource @Inject constructor(private val dataSource: MovieDAO
 
     fun delete(movie: Movie): Completable = dataSource.delete(movie)
 
-    fun isFavorite(movie: Movie): Flowable<Boolean> = dataSource.isFavorite(movie.id)
+    fun isFavorite(movie: Movie): Single<Boolean> = dataSource.isFavorite(movie.id)
 
     fun search(): DataSource.Factory<Int, Movie> = dataSource.getAll()
 }

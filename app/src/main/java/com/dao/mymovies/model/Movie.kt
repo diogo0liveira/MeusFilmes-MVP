@@ -2,6 +2,7 @@ package com.dao.mymovies.model
 
 import android.os.Parcelable
 import androidx.annotation.NonNull
+import androidx.databinding.ObservableField
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -41,9 +42,9 @@ data class Movie(
 
         @Ignore
         @Expose(serialize = false, deserialize = false)
-        var  isFavorite: Boolean = false) : Parcelable
+        var isFavorite: ObservableField<Boolean> = ObservableField(false)) : Parcelable
 {
-        constructor(): this(0, "", null, "", "", false)
+        constructor(): this(0, "", null, "", "", ObservableField(false))
 
         override fun toString(): String
         {

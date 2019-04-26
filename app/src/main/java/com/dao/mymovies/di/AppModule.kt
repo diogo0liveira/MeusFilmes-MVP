@@ -6,15 +6,12 @@ import com.dao.mymovies.data.local.dao.MovieDAO
 import com.dao.mymovies.data.local.database.MyMoviesDatabase
 import com.dao.mymovies.di.annotations.ActivityScoped
 import com.dao.mymovies.di.network.NetworkModule
-import com.dao.mymovies.util.SchedulerProvider
 import com.dao.mymovies.util.json.DateDeserializer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Singleton
 
@@ -33,10 +30,6 @@ class AppModule
     @Provides
     @Singleton
     fun provideContext(application: MyMoviesApplication): Context = application.applicationContext
-
-    @Provides
-    @Singleton
-    fun provideSchedulerProvider() = SchedulerProvider(Schedulers.io(), AndroidSchedulers.mainThread())
 
     @Provides
     @Singleton

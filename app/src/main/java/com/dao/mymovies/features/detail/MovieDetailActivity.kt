@@ -64,6 +64,12 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
         }
     }
 
+    override fun onDestroy()
+    {
+        presenter.terminate()
+        super.onDestroy()
+    }
+
     override fun onClick(view: View)
     {
         when(view.id)
@@ -94,15 +100,8 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
         helper.movie = movie
     }
 
-    override fun movieSaveSuccess()
+    override fun changeMovieFavoriteSuccess()
     {
-        helper.buttonSave.setImageResource(R.drawable.vd_favorite_24dp)
-        setResult(Activity.RESULT_OK)
-    }
-
-    override fun movieDeleteSuccess()
-    {
-        helper.buttonSave.setImageResource(R.drawable.vd_not_favorite_24dp)
         setResult(Activity.RESULT_OK)
     }
 

@@ -6,17 +6,22 @@ import com.dao.mymovies.Extras.MOVIE
 import com.dao.mymovies.R
 import com.dao.mymovies.data.repository.MoviesRepository
 import com.dao.mymovies.model.Movie
+import com.dao.mymovies.util.withSchedulers
+import io.reactivex.CompletableTransformer
+import io.reactivex.SingleTransformer
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
 
 /**
  * Created in 03/08/18 16:59.
  *
  * @author Diogo Oliveira.
  */
-class MovieDetailPresenter (private val repository: MoviesRepository) : MovieDetailInteractor.Presenter
+class MovieDetailPresenter(
+        private val repository: MoviesRepository,
+        private val composite: CompositeDisposable) : MovieDetailInteractor.Presenter
 {
     private lateinit var view: MovieDetailInteractor.View
-    private val composite: CompositeDisposable = CompositeDisposable()
     private lateinit var movie: Movie
 
     override fun initialize(view: MovieDetailInteractor.View)
@@ -38,8 +43,7 @@ class MovieDetailPresenter (private val repository: MoviesRepository) : MovieDet
 
             if(!savedState)
             {
-                val disposable = repository.isFavorite(movie).subscribe { movie.isFavorite = it }
-                composite.add(disposable)
+                isFavorite { favorite -> movie.isFavorite.set(favorite) }
             }
 
             view.putOnForm(movie)
@@ -52,30 +56,44 @@ class MovieDetailPresenter (private val repository: MoviesRepository) : MovieDet
 
     override fun movieAction()
     {
-        val disposable = repository.isFavorite(movie).subscribe { favorite ->
-            if(favorite)
-            {
-                movieNotFavorite()
-            }
-            else
-            {
-                movieFavorite()
-            }
-        }
-
-        composite.add(disposable)
+        isFavorite { favorite -> if(favorite) movieNotFavorite() else movieFavorite() }
     }
 
     private fun movieFavorite()
     {
-        val disposable = repository.save(movie).subscribe({ view.movieSaveSuccess() }, { view.movieDeleteSuccess() })
+      val disposable = repository.save(movie)
+              .compose(withSchedulers<CompletableTransformer>())
+              .subscribe({changeMovieFavorite(true)},
+                         {view.showToast(R.string.app_internal_error_client, Toast.LENGTH_LONG)})
+
         composite.add(disposable)
     }
 
     private fun movieNotFavorite()
     {
         val disposable = repository.delete(movie)
-                .subscribe({ view.movieDeleteSuccess() }, { view.showToast(R.string.app_internal_error_client, Toast.LENGTH_LONG) })
+                .compose(withSchedulers<CompletableTransformer>())
+                .subscribe({changeMovieFavorite(false)},
+                           {view.showToast(R.string.app_internal_error_client, Toast.LENGTH_LONG)})
+
+        composite.add(disposable)
+    }
+
+    private fun changeMovieFavorite(favorite: Boolean)
+    {
+        movie.isFavorite.set(favorite)
+        view.changeMovieFavoriteSuccess()
+    }
+
+    private fun isFavorite(block: (favorite: Boolean) -> Unit)
+    {
+        val consumer = Consumer<Boolean> { block(it) }
+        val error = Consumer<Throwable> { view.showToast(R.string.app_internal_error_client, Toast.LENGTH_LONG) }
+
+        val disposable = repository.isFavorite(movie)
+                .compose(withSchedulers<SingleTransformer<Boolean, Boolean>>())
+                .subscribe(consumer, error)
+
         composite.add(disposable)
     }
 

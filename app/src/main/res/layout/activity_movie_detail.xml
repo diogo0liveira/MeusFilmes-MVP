@@ -28,9 +28,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
+                app:toolbarId="@+id/toolbar"
                 app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:toolbarId="@+id/toolbar">
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <ImageView
                     android:id="@+id/cover"
@@ -59,8 +59,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            app:tint="@android:color/white"
+            app:rippleColor="@android:color/white"
             app:layout_anchor="@id/app_bar"
             app:layout_anchorGravity="bottom|end"
-            app:favorite="@{movie.isFavorite}"/>
+            app:favorite="@{movie.isFavorite}"
+            tools:src="@drawable/vd_not_favorite_24dp"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -17,8 +17,8 @@ import com.dao.mymovies.model.Movie
 private const val DB_NAME = "MyMoviesApp.db"
 private const val DB_VERSION = 1
 
-@Database(entities = [Movie::class], version = DB_VERSION, exportSchema = false)
 @TypeConverters(DateTypeConverter::class)
+@Database(entities = [Movie::class], version = DB_VERSION, exportSchema = false)
 abstract class MyMoviesDatabase : RoomDatabase()
 {
     abstract fun movieDAO(): MovieDAO
@@ -33,7 +33,6 @@ abstract class MyMoviesDatabase : RoomDatabase()
         }
 
         private fun buildDatabase(context: Context) =
-                Room.databaseBuilder(context.applicationContext, MyMoviesDatabase::class.java, DB_NAME)
-                        .fallbackToDestructiveMigration().build()
+                Room.databaseBuilder(context.applicationContext, MyMoviesDatabase::class.java, DB_NAME).build()
     }
 }
