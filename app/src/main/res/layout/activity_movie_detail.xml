@@ -8,15 +8,17 @@
 
     <data>
         <variable name="movie" type="com.dao.mymovies.model.Movie"/>
+        <variable name="colorHomeIndicator" type="com.bumptech.glide.request.RequestListener"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
+        app:statusBarBackground="@android:color/transparent"
         tools:context=".features.detail.MovieDetailActivity">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <com.dao.mymovies.util.view.AppBarScrimLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/app_bar_height"
@@ -40,6 +42,7 @@
                     android:src="@drawable/vd_empty_movie_120dp"
                     android:fitsSystemWindows="true"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    app:colorHomeIndicator="@{colorHomeIndicator}"
                     app:cover="@{movie.cover}"/>
 
                 <androidx.appcompat.widget.Toolbar
@@ -50,7 +53,7 @@
                     app:popupTheme="@style/AppTheme.PopupOverlay"
                     android:title="@{movie.title}"/>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
-        </com.google.android.material.appbar.AppBarLayout>
+        </com.dao.mymovies.util.view.AppBarScrimLayout>
 
         <include layout="@layout/view_content_movie_detail" app:movie="@{movie}"/>
 

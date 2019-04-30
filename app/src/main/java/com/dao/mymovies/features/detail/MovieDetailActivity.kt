@@ -1,18 +1,34 @@
 package com.dao.mymovies.features.detail
 
+import android.animation.ValueAnimator
 import android.app.Activity
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.databinding.DataBindingUtil
+import androidx.palette.graphics.Palette
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.dao.mymovies.R
 import com.dao.mymovies.base.BaseActivity
 import com.dao.mymovies.databinding.ActivityMovieDetailBinding
 import com.dao.mymovies.model.Movie
+import com.dao.mymovies.util.Logger
+import com.dao.mymovies.util.extensions.contrastColor
+import com.dao.mymovies.util.view.AppBarScrimLayout
+import com.google.android.material.animation.AnimationUtils
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
 import javax.inject.Inject
+
 
 /**
  * Created in 03/08/18 15:59.
@@ -25,6 +41,7 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
     lateinit var presenter: MovieDetailInteractor.Presenter
 
     private lateinit var helper: ActivityMovieDetailBinding
+    private lateinit var drawableHomeIndicator: Drawable
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -84,12 +101,11 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
     override fun initializeView()
     {
         setSupportActionBar(helper.toolbar)
-        val actionBar = this.supportActionBar
+        drawableHomeIndicator = getDrawable(R.drawable.vd_arrow_back_24dp)!!
 
-        if(actionBar != null)
-        {
-            actionBar.setDisplayHomeAsUpEnabled(true)
-            actionBar.setDisplayShowHomeEnabled(true)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(drawableHomeIndicator)
         }
 
         helper.buttonSave.setOnClickListener(this)
@@ -97,6 +113,7 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
 
     override fun putOnForm(movie: Movie)
     {
+        helper.colorHomeIndicator = setColorHomeIndicator()
         helper.movie = movie
     }
 
@@ -112,5 +129,57 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
             Toast.LENGTH_SHORT -> toast(text)
             Toast.LENGTH_LONG -> longToast(text)
         }
+    }
+
+    private fun setColorHomeIndicator(): RequestListener<Bitmap>
+    {
+        return object : RequestListener<Bitmap>
+        {
+            override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean
+            {
+                resource?.let { bitmap ->
+                    Palette.from(Bitmap.createBitmap(bitmap, 0, 0, 100, 100)).generate { palette ->
+                        palette?.let {
+                            val color = it.contrastColor()
+                            DrawableCompat.setTint(drawableHomeIndicator, color)
+
+                            if(color == Color.BLACK)
+                            {
+                                setScrimColorHomeIndicator()
+                            }
+                        }
+                    }
+                }
+                return false
+            }
+
+            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean
+            {
+                e?.also { Logger.e(it) }
+                return false
+            }
+        }
+    }
+
+    private fun setScrimColorHomeIndicator()
+    {
+        helper.toolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.text_primary_light))
+
+        helper.appBar.setOnScrimChangedListener(object: AppBarScrimLayout.OnScrimChangedListener
+        {
+            override fun onScrimChanged(showing: Boolean)
+            {
+                val colors = if(showing) Color.BLACK to Color.WHITE else Color.WHITE to Color.BLACK
+                val animator = ValueAnimator.ofArgb(colors.first, colors.second)
+
+                animator.addUpdateListener {
+                    DrawableCompat.setTint(drawableHomeIndicator, it.animatedValue as Int)
+                }
+
+                animator.duration = helper.toolbarLayout.scrimAnimationDuration
+                animator.interpolator = AnimationUtils.LINEAR_OUT_SLOW_IN_INTERPOLATOR
+                animator.start()
+            }
+        })
     }
 }

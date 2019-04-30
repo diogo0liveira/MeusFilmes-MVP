@@ -1,5 +1,6 @@
 package com.dao.mymovies.util.binding
 
+import android.graphics.Bitmap
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
@@ -7,6 +8,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.text.PrecomputedTextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.request.RequestListener
 import com.dao.mymovies.R
 import com.dao.mymovies.TheMovieApi
 import com.dao.mymovies.util.DateTime
@@ -19,7 +21,7 @@ import java.util.*
  *
  * @author Diogo Oliveira.
  */
-@BindingAdapter(value = ["text", "date"], requireAll = false)
+@BindingAdapter("text", "date", requireAll = false)
 fun date(view: TextView, text: String?, date: Date?)
 {
     var message = date.toString()
@@ -33,10 +35,10 @@ fun date(view: TextView, text: String?, date: Date?)
     view.text = message
 }
 
-@BindingAdapter("cover")
-fun cover(view: ImageView, uri: String?)
+@BindingAdapter("cover", "colorHomeIndicator", requireAll = false)
+fun cover(view: ImageView, uri: String?, request: RequestListener<Bitmap>?)
 {
-    view.load(TheMovieApi.COVER.plus(uri))
+    view.load(TheMovieApi.COVER.plus(uri), request)
 }
 
 @BindingAdapter("favorite")
