@@ -21,7 +21,6 @@ class MyMoviesPresenter (repository: MoviesRepository) : MyMoviesInteractor.Pres
                 .setPageSize(30).build()
 
         movies = LivePagedListBuilder(repository.loadMovies(), config).build()
-
     }
 
     override fun initialize(view: MyMoviesInteractor.View)

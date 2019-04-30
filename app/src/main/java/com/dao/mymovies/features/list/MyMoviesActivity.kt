@@ -1,7 +1,6 @@
 package com.dao.mymovies.features.list
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -39,9 +38,7 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
     private lateinit var helper: ActivityMyMoviesBinding
     private lateinit var order: Order
 
-    private val adapter: MyMoviesAdapter by lazy {
-        MyMoviesAdapter(this, this)
-    }
+    private val adapter: MyMoviesAdapter by lazy { MyMoviesAdapter(this, this) }
 
     private val preferences by lazy {
         this.getPreferences(Context.MODE_PRIVATE)
@@ -54,13 +51,13 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
         helper = DataBindingUtil.setContentView(this, R.layout.activity_my_movies)
         presenter.initialize(this)
 
-        if(savedInstanceState == null)
+        order = if(savedInstanceState == null)
         {
-            order = getOrder()
+            getOrder()
         }
         else
         {
-            order = savedInstanceState.getParcelable(KEY_ORDER)!!
+            savedInstanceState.getParcelable(KEY_ORDER)!!
         }
     }
 
@@ -117,24 +114,6 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
             else ->
             {
                 return super.onOptionsItemSelected(item)
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
-    {
-        when(requestCode)
-        {
-            REQUEST_DETAIL_MOVIE, REQUEST_SEARCH_MOVIES ->
-            {
-                if(resultCode == RESULT_OK)
-                {
-//                    presenter.loadMyMovieList()
-                }
-            }
-            else ->
-            {
-                super.onActivityResult(requestCode, resultCode, intent)
             }
         }
     }
