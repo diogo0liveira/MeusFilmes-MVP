@@ -23,8 +23,8 @@ class AppBarScrimLayout @JvmOverloads constructor(context: Context, attrs: Attri
 
     var iconHomeIndicator: Drawable? = null
     var scrimAnimationDuration: Long = 600
-    var colorStart: Int = Color.BLACK
-    var colorEnd: Int = Color.WHITE
+    private var colorStart: Int = Color.BLACK
+    private var colorEnd: Int = Color.WHITE
 
     override fun onAttachedToWindow()
     {
