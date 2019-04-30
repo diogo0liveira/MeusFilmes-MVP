@@ -1,7 +1,12 @@
 package com.dao.mymovies.util.view
 
+import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import androidx.core.graphics.drawable.DrawableCompat
+import com.google.android.material.animation.AnimationUtils
 import com.google.android.material.appbar.AppBarLayout
 
 /**
@@ -15,13 +20,22 @@ class AppBarScrimLayout @JvmOverloads constructor(context: Context, attrs: Attri
 {
     private var verticalOffset: Int = 0
     private var verticalOffsetMatch: Boolean = false
-    private var scrimChangedListener: OnScrimChangedListener? = null
+
+    var iconHomeIndicator: Drawable? = null
+    var scrimAnimationDuration: Long = 600
+    var colorStart: Int = Color.BLACK
+    var colorEnd: Int = Color.WHITE
+
+    override fun onAttachedToWindow()
+    {
+        super.onAttachedToWindow()
+        addOnOffsetChangedListener(this)
+    }
 
     override fun onDetachedFromWindow()
     {
         super.onDetachedFromWindow()
         removeOnOffsetChangedListener(this)
-        scrimChangedListener = null
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int)
@@ -29,25 +43,27 @@ class AppBarScrimLayout @JvmOverloads constructor(context: Context, attrs: Attri
         if(!verticalOffsetMatch && this.verticalOffset < Math.abs(verticalOffset) && Math.abs(verticalOffset) >= 198)
         {
             verticalOffsetMatch = true
-            scrimChangedListener?.onScrimChanged(true)
+            scrimChanged(true)
         }
         else if(verticalOffsetMatch && this.verticalOffset > Math.abs(verticalOffset) && Math.abs(verticalOffset) <= 197)
         {
             verticalOffsetMatch = false
-            scrimChangedListener?.onScrimChanged(false)
+            scrimChanged(false)
         }
 
         this.verticalOffset = Math.abs(verticalOffset)
     }
 
-    fun setOnScrimChangedListener(listener: OnScrimChangedListener)
+    private fun scrimChanged(showing: Boolean)
     {
-        scrimChangedListener = listener
-        addOnOffsetChangedListener(this)
-    }
+        iconHomeIndicator?.let { drawable ->
+            val colors = if(showing) colorStart to colorEnd else colorEnd to colorStart
 
-    interface OnScrimChangedListener
-    {
-        fun onScrimChanged(showing: Boolean)
+            val animator = ValueAnimator.ofArgb(colors.first, colors.second)
+            animator.addUpdateListener { DrawableCompat.setTint(drawable, it.animatedValue as Int) }
+            animator.interpolator = AnimationUtils.LINEAR_OUT_SLOW_IN_INTERPOLATOR
+            animator.duration = scrimAnimationDuration
+            animator.start()
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.dao.mymovies.features.detail
 
-import android.animation.ValueAnimator
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -23,8 +22,6 @@ import com.dao.mymovies.databinding.ActivityMovieDetailBinding
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.util.Logger
 import com.dao.mymovies.util.extensions.contrastColor
-import com.dao.mymovies.util.view.AppBarScrimLayout
-import com.google.android.material.animation.AnimationUtils
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
 import javax.inject.Inject
@@ -164,22 +161,7 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
     private fun setScrimColorHomeIndicator()
     {
         helper.toolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.text_primary_light))
-
-        helper.appBar.setOnScrimChangedListener(object: AppBarScrimLayout.OnScrimChangedListener
-        {
-            override fun onScrimChanged(showing: Boolean)
-            {
-                val colors = if(showing) Color.BLACK to Color.WHITE else Color.WHITE to Color.BLACK
-                val animator = ValueAnimator.ofArgb(colors.first, colors.second)
-
-                animator.addUpdateListener {
-                    DrawableCompat.setTint(drawableHomeIndicator, it.animatedValue as Int)
-                }
-
-                animator.duration = helper.toolbarLayout.scrimAnimationDuration
-                animator.interpolator = AnimationUtils.LINEAR_OUT_SLOW_IN_INTERPOLATOR
-                animator.start()
-            }
-        })
+        helper.appBar.scrimAnimationDuration = helper.toolbarLayout.scrimAnimationDuration
+        helper.appBar.iconHomeIndicator = drawableHomeIndicator
     }
 }
