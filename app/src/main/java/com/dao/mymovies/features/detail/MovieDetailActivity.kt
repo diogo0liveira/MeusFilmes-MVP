@@ -100,6 +100,7 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
     {
         setSupportActionBar(helper.toolbar)
         drawableHomeIndicator = getDrawable(R.drawable.vd_arrow_back_24dp)!!
+        DrawableCompat.setTint(drawableHomeIndicator, Color.WHITE)
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -146,7 +147,6 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean
             {
                 e?.also { Logger.e(it) }
-                setScrimColorHomeIndicator(Color.WHITE)
                 return false
             }
         }
@@ -154,14 +154,11 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
 
     private fun setScrimColorHomeIndicator(@ColorInt color: Int)
     {
-        if(color == Color.WHITE)
-        {
-            helper.toolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.text_primary_dark))
-            DrawableCompat.setTint(drawableHomeIndicator, color)
-        }
-        else
+        if(color == Color.BLACK)
         {
             helper.toolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.text_primary_light))
+            DrawableCompat.setTint(drawableHomeIndicator, Color.BLACK)
+
             helper.appBar.scrimAnimationDuration = helper.toolbarLayout.scrimAnimationDuration
             helper.appBar.iconHomeIndicator = drawableHomeIndicator
         }

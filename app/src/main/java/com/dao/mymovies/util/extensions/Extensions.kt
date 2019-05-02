@@ -29,6 +29,6 @@ fun ImageView.load(uri: String?, request: RequestListener<Bitmap>? = null)
 fun Palette.contrastColor(): Int
 {
     val most = swatches.maxBy { it.population }
-    return if(ColorUtils.calculateLuminance(most?.rgb ?: Color.WHITE) > 0.5) Color.BLACK else Color.WHITE
+    return if(ColorUtils.calculateLuminance(most?.rgb ?: Color.BLACK) > 0.5) Color.BLACK else Color.WHITE
 }
 

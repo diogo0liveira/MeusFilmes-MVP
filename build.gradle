@@ -35,6 +35,7 @@ ext {
     compileSdkVersion = 28
 
     pagingVersion = '2.1.0'
+    paletteVersion = '1.0.0'
     cardviewVersion = '1.0.0'
     materialVersion = '1.1.0-alpha05'
     appcompatVersion = '1.1.0-alpha04'
@@ -42,15 +43,15 @@ ext {
     constraintlayoutVersion = '2.0.0-alpha4'
     coordinatorlayoutVersion = '1.1.0-alpha01'
 
-    roomRuntimeVersion = '2.1.0-alpha06'
-    roomRxjava2Version = '2.1.0-alpha06'
+    roomRuntimeVersion = '2.1.0-alpha07'
+    roomRxjava2Version = '2.1.0-alpha07'
     roomCompilerVersion = '2.1.0-alpha06'
 
     /* External */
     daggerVersion = '2.22.1'
     daggerAndroidVersion = '2.22.1'
     glideVersion = '4.9.0'
-    gsonVersion = '2.8.5'
+    moshiVersion = '1.8.0'
     rxjavaVersion = '2.2.6'
     rxandroidVersion = '2.1.1'
     retrofitVersion = '2.5.0'
