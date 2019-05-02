@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import com.dao.mymovies.R
 import com.google.android.material.snackbar.Snackbar
@@ -19,7 +20,7 @@ import dagger.android.AndroidInjection
 @SuppressLint("Registered")
 open class BaseActivity : AppCompatActivity()
 {
-    private var snackOffline: Snackbar? = null
+    private var snackNotify: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -33,14 +34,14 @@ open class BaseActivity : AppCompatActivity()
         return (manager.activeNetworkInfo != null) && manager.activeNetworkInfo.isConnected
     }
 
-    protected fun notifyDisconnected(anchor: View, block: () -> Unit)
+    protected fun showSnackNotify(anchor: View, @StringRes text: Int, block: () -> Unit)
     {
-        snackOffline = Snackbar.make(anchor, R.string.app_internal_no_connection, Snackbar.LENGTH_INDEFINITE)
-        snackOffline?.run { setAction(R.string.retry) { block() }.show() }
+        snackNotify = Snackbar.make(anchor, text, Snackbar.LENGTH_INDEFINITE)
+        snackNotify?.run { setAction(R.string.retry) { block() }.show() }
     }
 
-    protected fun removeNotifyDisconnected()
+    protected fun removeSnackNotify()
     {
-        snackOffline?.dismiss()
+        snackNotify?.dismiss()
     }
 }

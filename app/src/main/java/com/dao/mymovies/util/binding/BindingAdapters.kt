@@ -35,7 +35,7 @@ fun date(view: TextView, text: String?, date: Date?)
     view.text = message
 }
 
-@BindingAdapter("cover", "colorHomeIndicator", requireAll = false)
+@BindingAdapter("cover", "requestListener", requireAll = false)
 fun cover(view: ImageView, uri: String?, request: RequestListener<Bitmap>?)
 {
     view.load(TheMovieApi.COVER.plus(uri), request)

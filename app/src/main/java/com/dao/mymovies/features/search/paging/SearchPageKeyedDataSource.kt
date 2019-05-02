@@ -6,11 +6,15 @@ import com.dao.mymovies.R
 import com.dao.mymovies.data.repository.MoviesRepository
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.network.NetworkState
+import com.dao.mymovies.network.State
 import com.dao.mymovies.pojo.SearchResult
+import com.dao.mymovies.util.Logger
 import com.dao.mymovies.util.withSchedulers
 import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -40,7 +44,7 @@ class SearchPageKeyedDataSource @Inject constructor(
             }
             else
             {
-                networkState.postValue(NetworkState.error(
+                networkState.postValue(NetworkState.error(State.UNAVAILABLE,
                         R.string.app_internal_server_unavailable) { loadInitial(params, callback) })
             }
         }
@@ -53,6 +57,7 @@ class SearchPageKeyedDataSource @Inject constructor(
                 .search(query, 1)
                 .doOnSubscribe { networkState.postValue(NetworkState.RUNNING) }
                 .compose(withSchedulers<ObservableTransformer<Response<SearchResult>, Response<SearchResult>>>())
+                .onErrorReturn { unavailable(it) }
                 .subscribe(consumer, error)
 
         composite.add(disposable)
@@ -72,7 +77,7 @@ class SearchPageKeyedDataSource @Inject constructor(
             }
             else
             {
-                networkState.postValue(NetworkState.error(
+                networkState.postValue(NetworkState.error(State.UNAVAILABLE,
                         R.string.app_internal_server_unavailable) { loadAfter(params, callback) })
             }
         }
@@ -84,6 +89,7 @@ class SearchPageKeyedDataSource @Inject constructor(
         val disposable = repository.search(query, params.key)
                 .doOnSubscribe { networkState.postValue(NetworkState.RUNNING) }
                 .compose(withSchedulers<ObservableTransformer<Response<SearchResult>, Response<SearchResult>>>())
+                .onErrorReturn { unavailable(it) }
                 .subscribe(consumer, error)
 
         composite.add(disposable)
@@ -92,6 +98,12 @@ class SearchPageKeyedDataSource @Inject constructor(
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>)
     {
         /* not implemented */
+    }
+
+    private fun unavailable(error: Throwable): Response<SearchResult>
+    {
+        Logger.e(error)
+        return Response.error(400, ResponseBody.create(MediaType.parse(""), error.message ?: ""))
     }
 
     private fun pagination(search: SearchResult): Map<String, Int?>

@@ -112,7 +112,7 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
 
     override fun putOnForm(movie: Movie)
     {
-        helper.colorHomeIndicator = setColorHomeIndicator()
+        helper.requestListener = setColorHomeIndicator()
         helper.movie = movie
     }
 

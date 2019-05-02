@@ -1,13 +1,13 @@
 package com.dao.mymovies.features.search
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.Nullable
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
@@ -20,8 +20,8 @@ import com.dao.mymovies.base.BaseActivity
 import com.dao.mymovies.base.OnCollectionChangedListener
 import com.dao.mymovies.databinding.ActivitySearchMoviesBinding
 import com.dao.mymovies.databinding.ViewEmptySearchMoviesBinding
-import com.dao.mymovies.features.detail.MovieDetailActivity
 import com.dao.mymovies.features.adapter.MyMoviesAdapter
+import com.dao.mymovies.features.detail.MovieDetailActivity
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.network.NetworkState
 import com.dao.mymovies.network.State
@@ -69,6 +69,7 @@ class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View, OnColl
             override fun onQueryTextSubmit(query: String?): Boolean
             {
                 query?.let {
+                    removeSnackNotify()
                     presenter.searchMovies(it)
                     searchView.clearFocus()
                 }
@@ -78,7 +79,10 @@ class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View, OnColl
 
             override fun onQueryTextChange(newText: String?): Boolean
             {
-                newText?.let { adapter.clean() }
+                newText?.let {
+                    removeSnackNotify()
+                    adapter.clean()
+                }
                 return false
             }
         })
@@ -120,11 +124,6 @@ class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View, OnColl
         }
     }
 
-    override fun context(): Context
-    {
-        return this
-    }
-
     override fun initializeView()
     {
         helper.viewState.viewStub?.inflate()?.let { view ->
@@ -163,23 +162,18 @@ class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View, OnColl
     override fun onCollectionChanged(isEmpty: Boolean)
     {
         helperEmpty.visible = isEmpty
-        helperEmpty.showProgressBar = !isEmpty
-        helper.showProgressPagination = !isEmpty
     }
 
     override fun executeRequireNetwork(block: () -> Unit)
     {
         if(isNetworkConnected())
         {
-            removeNotifyDisconnected()
+            removeSnackNotify()
             block()
         }
         else
         {
-            helperEmpty.showProgressBar = false
-            helper.showProgressPagination = false
-            helperEmpty.visible = (adapter.itemCount == 0)
-            notifyDisconnected(helper.anchor) { executeRequireNetwork(block) }
+            notifyError(R.string.app_internal_no_connection) { executeRequireNetwork(block) }
         }
     }
 
@@ -190,25 +184,28 @@ class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View, OnColl
             {
                 State.RUNNING ->
                 {
-                    if(adapter.itemCount == 0)
-                    {
-                        helperEmpty.showProgressBar = true
-                    }
-                    else
-                    {
-                        helper.showProgressPagination = true
-                    }
+                    helperEmpty.showProgressBar = (adapter.itemCount == 0)
                 }
                 State.SUCCESS ->
                 {
                     helperEmpty.showProgressBar = false
-                    helper.showProgressPagination = false
                 }
                 State.FAILED ->
                 {
                     executeRequireNetwork { it.retry?.invoke() }
                 }
+                State.UNAVAILABLE ->
+                {
+                    notifyError(it.messageRes) { executeRequireNetwork(it.retry!!) }
+                }
             }
         })
+    }
+
+    override fun notifyError(@StringRes text: Int, block: () -> Unit)
+    {
+        helperEmpty.showProgressBar = false
+        helperEmpty.visible = (adapter.itemCount == 0)
+        showSnackNotify(helper.anchor, text) { block() }
     }
 }

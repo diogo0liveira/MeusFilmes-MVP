@@ -8,7 +8,7 @@
 
     <data>
         <variable name="movie" type="com.dao.mymovies.model.Movie"/>
-        <variable name="colorHomeIndicator" type="com.bumptech.glide.request.RequestListener"/>
+        <variable name="requestListener" type="com.bumptech.glide.request.RequestListener"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -42,7 +42,7 @@
                     android:src="@drawable/vd_empty_movie_120dp"
                     android:fitsSystemWindows="true"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    app:colorHomeIndicator="@{colorHomeIndicator}"
+                    app:requestListener="@{requestListener}"
                     app:cover="@{movie.cover}"/>
 
                 <androidx.appcompat.widget.Toolbar

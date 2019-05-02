@@ -10,7 +10,7 @@ import com.dao.mymovies.R
  */
 enum class State
 {
-    RUNNING, SUCCESS, FAILED
+    RUNNING, SUCCESS, FAILED, UNAVAILABLE
 }
 
 data class NetworkState constructor(
@@ -24,6 +24,9 @@ data class NetworkState constructor(
         val RUNNING = NetworkState(State.RUNNING)
         val SUCCESS = NetworkState(State.SUCCESS)
         fun error(message: String?, retry: (() -> Unit)? = null) = NetworkState(State.FAILED, message, retry = retry)
-        fun error(@StringRes message: Int, retry: (() -> Unit)? = null) = NetworkState(State.FAILED, messageRes = message, retry = retry)
+
+        fun error(status: State = State.FAILED,
+                  @StringRes message: Int,
+                  retry: (() -> Unit)? = null) = NetworkState(status, messageRes = message, retry = retry)
     }
 }

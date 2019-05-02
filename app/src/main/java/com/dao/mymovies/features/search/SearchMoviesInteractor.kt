@@ -1,6 +1,5 @@
 package com.dao.mymovies.features.search
 
-import android.content.Context
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
@@ -19,13 +18,13 @@ interface SearchMoviesInteractor
 {
     interface View : IView
     {
-        fun context(): Context
-
-        fun executeRequireNetwork(block: () -> Unit)
-
         fun networkStateObserver(observable: LiveData<NetworkState>)
 
         fun showToast(@StringRes text: Int, @Duration duration: Int)
+
+        fun notifyError(@StringRes text: Int, block: () -> Unit)
+
+        fun executeRequireNetwork(block: () -> Unit)
     }
 
     interface Presenter : IPresenter<View>

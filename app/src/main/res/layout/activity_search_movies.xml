@@ -5,10 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <variable name="showProgressPagination" type="boolean"/>
-    </data>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/anchor"
         android:layout_width="match_parent"
@@ -23,14 +19,6 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/view_row_movie">
         </androidx.recyclerview.widget.RecyclerView>
-
-        <androidx.core.widget.ContentLoadingProgressBar
-            android:id="@+id/progress_pagination"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:visibility="@{showProgressPagination}"
-            tools:visibility="visible"/>
 
         <ViewStub
             android:id="@+id/view_state"
