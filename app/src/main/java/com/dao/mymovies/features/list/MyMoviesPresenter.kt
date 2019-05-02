@@ -5,6 +5,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.dao.mymovies.data.repository.MoviesRepository
 import com.dao.mymovies.model.Movie
+import com.dao.mymovies.model.Order
 
 /**
  * Created in 03/08/18 12:03.
@@ -15,12 +16,12 @@ class MyMoviesPresenter(repository: MoviesRepository) : MyMoviesInteractor.Prese
 {
     private lateinit var view: MyMoviesInteractor.View
     private val movies: LiveData<PagedList<Movie>>
+    private var order: Order = Order.TITLE
 
     init
     {
         val config = PagedList.Config.Builder().setPageSize(30).build()
-
-        movies = LivePagedListBuilder(repository.loadMovies(), config).build()
+        movies = LivePagedListBuilder(repository.loadMovies().mapByPage { orderBy(it) }, config).build()
     }
 
     override fun initialize(view: MyMoviesInteractor.View)
@@ -30,4 +31,19 @@ class MyMoviesPresenter(repository: MoviesRepository) : MyMoviesInteractor.Prese
     }
 
     override fun moviesObserver(): LiveData<PagedList<Movie>> = movies
+
+    private fun orderBy(movies: List<Movie>): List<Movie>
+    {
+        return when(order)
+        {
+            Order.TITLE -> movies.sortedBy { movie -> movie.title }
+            Order.DATE -> movies.sortedBy { movie -> movie.releaseDate }
+        }
+    }
+
+    override fun moviesOrderBy(order: Order)
+    {
+        this.order = order
+        movies.value?.dataSource?.invalidate()
+    }
 }

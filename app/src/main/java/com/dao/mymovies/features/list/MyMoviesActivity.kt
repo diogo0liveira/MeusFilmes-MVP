@@ -47,7 +47,6 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         helper = DataBindingUtil.setContentView(this, R.layout.activity_my_movies)
-        presenter.initialize(this)
 
         order = if(savedInstanceState == null)
         {
@@ -57,6 +56,9 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
         {
             savedInstanceState.getParcelable(KEY_ORDER)!!
         }
+
+        presenter.moviesOrderBy(order)
+        presenter.initialize(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle)
@@ -138,10 +140,7 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
         adapter.setOnCollectionChangedListener(this)
         helper.moviesList.adapter = adapter
 
-        presenter.moviesObserver().observe(this, Observer {
-            adapter.submitList(it)
-            sortList(order)
-        })
+        presenter.moviesObserver().observe(this, Observer { adapter.submitList(it) })
     }
 
     override fun onCollectionChanged(isEmpty: Boolean)
@@ -173,19 +172,8 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
     private fun sortList(order: Order)
     {
         this.order = order
+        presenter.moviesOrderBy(order)
         saveOrder(order)
-
-//        when(order)
-//        {
-//            Order.TITLE ->
-//            {
-//                adapter.sort { it -> it.title }
-//            }
-//            Order.DATE ->
-//            {
-//                adapter.sort(true) { it -> it.releaseDate }
-//            }
-//        }
     }
 
     private fun saveOrder(order: Order)

@@ -5,6 +5,7 @@ import androidx.paging.PagedList
 import com.dao.mymovies.base.mvp.IPresenter
 import com.dao.mymovies.base.mvp.IView
 import com.dao.mymovies.model.Movie
+import com.dao.mymovies.model.Order
 
 /**
  * Created in 03/08/18 12:02.
@@ -21,5 +22,7 @@ interface MyMoviesInteractor
     interface Presenter : IPresenter<View>
     {
         fun moviesObserver(): LiveData<PagedList<Movie>>
+
+        fun moviesOrderBy(order: Order)
     }
 }
