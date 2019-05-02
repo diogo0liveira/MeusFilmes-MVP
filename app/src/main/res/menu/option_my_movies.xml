@@ -11,9 +11,7 @@
         app:showAsAction="ifRoom">
 
         <menu>
-            <group
-                android:id="@+id/group_order"
-                android:checkableBehavior="single">
+            <group android:checkableBehavior="single">
                 <item android:id="@+id/menu_order_title"
                     android:title="@string/menu_order_by_title"/>
                 <item android:id="@+id/menu_order_date"

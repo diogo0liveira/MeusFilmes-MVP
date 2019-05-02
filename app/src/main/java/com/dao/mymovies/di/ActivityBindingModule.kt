@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.dao.mymovies.di
 
 import com.dao.mymovies.di.annotations.ActivityScoped
