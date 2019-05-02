@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.databinding.DataBindingUtil
@@ -136,15 +137,7 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
             {
                 resource?.let { bitmap ->
                     Palette.from(Bitmap.createBitmap(bitmap, 0, 0, 100, 100)).generate { palette ->
-                        palette?.let {
-                            val color = it.contrastColor()
-                            DrawableCompat.setTint(drawableHomeIndicator, color)
-
-                            if(color == Color.BLACK)
-                            {
-                                setScrimColorHomeIndicator()
-                            }
-                        }
+                        palette?.let { setScrimColorHomeIndicator(it.contrastColor()) }
                     }
                 }
                 return false
@@ -153,15 +146,24 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean
             {
                 e?.also { Logger.e(it) }
+                setScrimColorHomeIndicator(Color.WHITE)
                 return false
             }
         }
     }
 
-    private fun setScrimColorHomeIndicator()
+    private fun setScrimColorHomeIndicator(@ColorInt color: Int)
     {
-        helper.toolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.text_primary_light))
-        helper.appBar.scrimAnimationDuration = helper.toolbarLayout.scrimAnimationDuration
-        helper.appBar.iconHomeIndicator = drawableHomeIndicator
+        if(color == Color.WHITE)
+        {
+            helper.toolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.text_primary_dark))
+            DrawableCompat.setTint(drawableHomeIndicator, color)
+        }
+        else
+        {
+            helper.toolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.text_primary_light))
+            helper.appBar.scrimAnimationDuration = helper.toolbarLayout.scrimAnimationDuration
+            helper.appBar.iconHomeIndicator = drawableHomeIndicator
+        }
     }
 }

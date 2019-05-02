@@ -1,8 +1,7 @@
 package com.dao.mymovies.pojo
 
 import com.dao.mymovies.model.Movie
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 /**
  * Created in 06/08/18 09:15.
@@ -10,15 +9,11 @@ import com.google.gson.annotations.SerializedName
  * @author Diogo Oliveira.
  */
 data class SearchResult(
-        @Expose
-        @SerializedName("page")
+        @Json(name = "page")
         val page: Int,
-        @Expose
-        @SerializedName("total_results")
+        @Json(name = "total_results")
         val totalResults: Int,
-        @Expose
-        @SerializedName("total_pages")
+        @Json(name = "total_pages")
         val totalPages: Int,
-        @Expose
-        @SerializedName("results")
+        @Json(name = "results")
         val results: List<Movie>)

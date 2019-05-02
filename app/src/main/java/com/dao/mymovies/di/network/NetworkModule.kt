@@ -6,7 +6,7 @@ import com.dao.mymovies.TheMovieApi
 import com.dao.mymovies.network.TheMovies
 import com.dao.mymovies.network.interceptor.TheMoviesInterceptor
 import com.dao.mymovies.network.interceptor.TokenRequestInterceptor
-import com.google.gson.Gson
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
@@ -16,7 +16,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 /**
@@ -50,11 +50,11 @@ class NetworkModule
                     .build()
     @Provides
     @Singleton
-    fun provideRetrofit(httpClient: OkHttpClient, gson: Gson): Retrofit =
+    fun provideRetrofit(httpClient: OkHttpClient, moshi: Moshi): Retrofit =
             Retrofit.Builder()
                     .client(httpClient)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addConverterFactory(MoshiConverterFactory.create(moshi))
                     .baseUrl(TheMovieApi.URL).build()
 
 

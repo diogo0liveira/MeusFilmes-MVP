@@ -6,8 +6,8 @@ import androidx.databinding.ObservableField
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -18,37 +18,32 @@ import java.util.*
  */
 @Parcelize
 @Entity(tableName = "Movies")
+@JsonClass(generateAdapter = true)
 data class Movie(
-        @Expose
         @NonNull
         @PrimaryKey
-        @SerializedName("id")
+        @Json(name = "id")
         var id: Int,
-        @Expose
         @NonNull
-        @SerializedName("title")
+        @Json(name = "title")
         var title: String,
-        @Expose
         @NonNull
-        @SerializedName("release_date")
+        @Json(name = "release_date")
         var releaseDate: Date?,
-        @Expose
         @NonNull
-        @SerializedName("vote_average")
+        @Json(name = "vote_average")
         var voteAverage: Float,
-        @Expose
         @NonNull
-        @SerializedName("overview")
+        @Json(name = "overview")
         var overView: String,
-        @Expose
-        @SerializedName("poster_path")
-        var cover: String,
+        @Json(name = "poster_path")
+        var cover: String?,
 
         @Ignore
-        @Expose(serialize = false, deserialize = false)
+        @Transient
         var isFavorite: ObservableField<Boolean> = ObservableField(false)) : Parcelable
 {
-        constructor(): this(0, "", null, 0F, "", "", ObservableField(false))
+        constructor(): this(0, "", null, 0F, "", null, ObservableField(false))
 
         override fun toString(): String
         {
