@@ -1,6 +1,7 @@
 package com.dao.mymovies.features.list
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -39,10 +40,7 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
     private lateinit var order: Order
 
     private val adapter: MyMoviesAdapter by lazy { MyMoviesAdapter(this, this) }
-
-    private val preferences by lazy {
-        this.getPreferences(Context.MODE_PRIVATE)
-    }
+    private val preferences: SharedPreferences by lazy { this.getPreferences(Context.MODE_PRIVATE) }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
