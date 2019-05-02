@@ -151,11 +151,6 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
         helperEmpty.visible = isEmpty
     }
 
-    override fun context(): Context
-    {
-        return this
-    }
-
     override fun onClick(view: View)
     {
         when(view.id)

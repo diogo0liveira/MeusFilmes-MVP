@@ -11,14 +11,14 @@ import com.dao.mymovies.model.Movie
  *
  * @author Diogo Oliveira.
  */
-class MyMoviesPresenter (repository: MoviesRepository) : MyMoviesInteractor.Presenter
+class MyMoviesPresenter(repository: MoviesRepository) : MyMoviesInteractor.Presenter
 {
     private lateinit var view: MyMoviesInteractor.View
     private val movies: LiveData<PagedList<Movie>>
 
-    init {
-        val config = PagedList.Config.Builder()
-                .setPageSize(30).build()
+    init
+    {
+        val config = PagedList.Config.Builder().setPageSize(30).build()
 
         movies = LivePagedListBuilder(repository.loadMovies(), config).build()
     }

@@ -1,6 +1,5 @@
 package com.dao.mymovies.features.list
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import com.dao.mymovies.base.mvp.IPresenter
@@ -16,8 +15,6 @@ interface MyMoviesInteractor
 {
     interface View : IView
     {
-        fun context(): Context
-
         fun startSearchMoviesActivity()
     }
 
