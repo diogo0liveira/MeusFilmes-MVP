@@ -69,9 +69,7 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean
     {
-        val order = menu.findItem(R.id.menu_order)
-
-        order?.let {
+        menu.findItem(R.id.menu_order)?.let {
             when(this.order)
             {
                 Order.TITLE ->
@@ -122,20 +120,18 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
     {
         helper.buttonAdd.setOnClickListener(this)
 
-        if(helper.messageEmpty.isInflated)
-        {
-            helperEmpty.visible = true
-        }
-        else
-        {
-            helper.messageEmpty.viewStub!!.visibility = View.VISIBLE
-            helperEmpty = DataBindingUtil.findBinding(helper.messageEmpty.root)!!
-            helperEmpty.visible = true
+        helper.messageEmpty.viewStub?.inflate()?.let { view ->
+            DataBindingUtil.getBinding<ViewEmptyMyMoviesBinding>(view)?.let { binding ->
+                helperEmpty = binding
+                helperEmpty.visible = true
+            }
         }
 
-        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        helper.moviesList.addItemDecoration(divider)
-        helper.moviesList.setHasFixedSize(true)
+        with(helper.moviesList) {
+            val divider = DividerItemDecoration(this@MyMoviesActivity, DividerItemDecoration.VERTICAL)
+            addItemDecoration(divider)
+            setHasFixedSize(true)
+        }
 
         adapter.setOnCollectionChangedListener(this)
         helper.moviesList.adapter = adapter
