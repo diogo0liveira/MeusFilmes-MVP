@@ -6,6 +6,7 @@ import com.dao.mymovies.data.local.dao.MovieDAO
 import com.dao.mymovies.data.local.database.MyMoviesDatabase
 import com.dao.mymovies.di.annotations.ActivityScoped
 import com.dao.mymovies.di.network.NetworkModule
+import com.dao.mymovies.util.moshi.EmptyDateSafeAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -38,6 +39,7 @@ class AppModule
     @Provides
     @Singleton
     fun provideMoshi(): Moshi = Moshi.Builder()
-            .add(Date::class.java, Rfc3339DateJsonAdapter())
-            .add(KotlinJsonAdapterFactory()).build()
+            .add(KotlinJsonAdapterFactory())
+            .add(EmptyDateSafeAdapter)
+            .add(Date::class.java, Rfc3339DateJsonAdapter().nullSafe()).build()
 }
