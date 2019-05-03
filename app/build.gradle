@@ -100,15 +100,18 @@ dependencies {
 
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoCoreVersion"
-    testImplementation "androidx.arch.core:core-testing:$coreTesting"
+//
+//    androidTestImplementation "androidx.test:rules:$testRulesVersion"
+//    androidTestImplementation "androidx.test:runner:$testRunnerVersion"
+//
+//    androidTestImplementation "androidx.test.ext:junit:$extJunitVersion"
+//    androidTestImplementation "org.mockito:mockito-android:$mockitoAndroidVersion"
+//    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCoreVersion"
+//    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoCoreVersion"
+//    androidTestImplementation "androidx.test.espresso:espresso-intents:$espressoCoreVersion"
+//    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:$espressoCoreVersion"
 
-    androidTestImplementation "androidx.test:rules:$testRulesVersion"
-    androidTestImplementation "androidx.test:runner:$testRunnerVersion"
-
-    androidTestImplementation "androidx.test.ext:junit:$extJunitVersion"
-    androidTestImplementation "org.mockito:mockito-android:$mockitoAndroidVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCoreVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoCoreVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-intents:$espressoCoreVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:$espressoCoreVersion"
+//    testImplementation 'junit:junit:4.12'
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }

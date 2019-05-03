@@ -29,7 +29,7 @@ class MoviesRepository @Inject constructor(
 
     fun delete(movie: Movie) = local.delete(movie)
 
-    fun loadMovies(): DataSource.Factory<Int, Movie> = local.search()
+    fun loadMovies(): DataSource.Factory<Int, Movie> = local.loadMovies()
 
     fun isFavorite(movie: Movie): Single<Boolean> = local.isFavorite(movie)
 

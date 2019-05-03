@@ -22,5 +22,5 @@ class MoviesLocalDataSource @Inject constructor(private val dataSource: MovieDAO
 
     fun isFavorite(movie: Movie): Single<Boolean> = dataSource.isFavorite(movie.id)
 
-    fun search(): DataSource.Factory<Int, Movie> = dataSource.getAll()
+    fun loadMovies(): DataSource.Factory<Int, Movie> = dataSource.getAll()
 }
