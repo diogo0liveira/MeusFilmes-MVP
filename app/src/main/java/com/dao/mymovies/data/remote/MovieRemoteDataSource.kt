@@ -1,4 +1,4 @@
-package com.dao.mymovies.data
+package com.dao.mymovies.data.remote
 
 import com.dao.mymovies.pojo.SearchResult
 import io.reactivex.Observable
@@ -9,7 +9,7 @@ import retrofit2.Response
  *
  * @author Diogo Oliveira.
  */
-interface MovieDataSourceInteractor
+interface MovieRemoteDataSource
 {
     fun search(query: String, page: Int = 1): Observable<Response<SearchResult>>
 }

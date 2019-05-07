@@ -1,6 +1,5 @@
 package com.dao.mymovies.data.remote
 
-import com.dao.mymovies.data.MovieDataSourceInteractor
 import com.dao.mymovies.network.TheMovies
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,7 +10,7 @@ import javax.inject.Singleton
  * @author Diogo Oliveira.
  */
 @Singleton
-class MoviesRemoteDataSource @Inject constructor(private val service: TheMovies) : MovieDataSourceInteractor
+class IMoviesRemoteDataSource @Inject constructor(private val service: TheMovies) : MovieRemoteDataSource
 {
     override fun search(query: String, page: Int) = service.search(query, page)
 }

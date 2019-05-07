@@ -11,7 +11,6 @@ import com.dao.mymovies.R
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjection
 
-
 /**
  * Created in 26/03/19 20:49.
  *

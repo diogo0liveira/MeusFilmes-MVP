@@ -11,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0-alpha13'
+        classpath 'com.android.tools.build:gradle:3.5.0-beta01'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -37,15 +37,15 @@ ext {
     pagingVersion = '2.1.0'
     paletteVersion = '1.0.0'
     cardviewVersion = '1.0.0'
-    materialVersion = '1.1.0-alpha05'
+    materialVersion = '1.1.0-alpha06'
     appcompatVersion = '1.1.0-alpha04'
-    recyclerviewVersion = '1.1.0-alpha04'
+    recyclerviewVersion = '1.1.0-alpha05'
     constraintlayoutVersion = '2.0.0-alpha5'
     coordinatorlayoutVersion = '1.1.0-alpha01'
 
     roomRuntimeVersion = '2.1.0-alpha07'
     roomRxjava2Version = '2.1.0-alpha07'
-    roomCompilerVersion = '2.1.0-alpha06'
+    roomCompilerVersion = '2.1.0-alpha07'
 
     /* External */
     daggerVersion = '2.22.1'

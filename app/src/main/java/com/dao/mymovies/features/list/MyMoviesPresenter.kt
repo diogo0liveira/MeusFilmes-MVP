@@ -3,16 +3,19 @@ package com.dao.mymovies.features.list
 import androidx.lifecycle.LiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.dao.mymovies.data.repository.MoviesRepository
+import com.dao.mymovies.data.MovieRepository
+import com.dao.mymovies.di.annotations.ActivityScoped
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.model.Order
+import javax.inject.Inject
 
 /**
  * Created in 03/08/18 12:03.
  *
  * @author Diogo Oliveira.
  */
-class MyMoviesPresenter(repository: MoviesRepository) : MyMoviesInteractor.Presenter
+@ActivityScoped
+class MyMoviesPresenter @Inject constructor(repository: MovieRepository) : MyMoviesInteractor.Presenter
 {
     private lateinit var view: MyMoviesInteractor.View
     private val movies: LiveData<PagedList<Movie>>
@@ -21,7 +24,7 @@ class MyMoviesPresenter(repository: MoviesRepository) : MyMoviesInteractor.Prese
     init
     {
         val config = PagedList.Config.Builder().setPageSize(30).build()
-        movies = LivePagedListBuilder(repository.loadMovies().mapByPage { orderBy(it) }, config).build()
+        movies = LivePagedListBuilder(repository.getMovies().mapByPage { orderBy(it) }, config).build()
     }
 
     override fun initialize(view: MyMoviesInteractor.View)

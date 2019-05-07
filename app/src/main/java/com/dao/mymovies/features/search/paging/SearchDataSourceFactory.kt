@@ -2,7 +2,7 @@ package com.dao.mymovies.features.search.paging
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
-import com.dao.mymovies.data.repository.MoviesRepository
+import com.dao.mymovies.data.MovieRepository
 import com.dao.mymovies.model.Movie
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class SearchDataSourceFactory @Inject constructor(
         private val query: String,
         private val composite: CompositeDisposable,
-        private val repository: MoviesRepository): DataSource.Factory<Int, Movie>()
+        private val repository: MovieRepository): DataSource.Factory<Int, Movie>()
 {
     val source = MutableLiveData<SearchPageKeyedDataSource>()
 

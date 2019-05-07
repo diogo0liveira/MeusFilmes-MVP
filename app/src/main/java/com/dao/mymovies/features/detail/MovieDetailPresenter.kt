@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import com.dao.mymovies.Extras.MOVIE
 import com.dao.mymovies.R
-import com.dao.mymovies.data.repository.MoviesRepository
+import com.dao.mymovies.data.MovieRepository
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.util.withSchedulers
 import io.reactivex.CompletableTransformer
@@ -18,7 +18,7 @@ import io.reactivex.functions.Consumer
  * @author Diogo Oliveira.
  */
 class MovieDetailPresenter(
-        private val repository: MoviesRepository,
+        private val repository: MovieRepository,
         private val composite: CompositeDisposable) : MovieDetailInteractor.Presenter
 {
     private lateinit var view: MovieDetailInteractor.View

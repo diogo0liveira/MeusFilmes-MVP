@@ -1,6 +1,7 @@
 package com.dao.mymovies.features.search
 
-import com.dao.mymovies.data.repository.MoviesRepository
+import com.dao.mymovies.data.MovieRepository
+import com.dao.mymovies.data.repository.RepositoryModule
 import com.dao.mymovies.di.annotations.ActivityScoped
 import dagger.Module
 import dagger.Provides
@@ -11,12 +12,12 @@ import io.reactivex.disposables.CompositeDisposable
  *
  * @author Diogo Oliveira.
  */
-@Module
+@Module(includes = [RepositoryModule::class])
 class SearchMoviesModule
 {
     @Provides
     @ActivityScoped
-    fun provideSearchMoviesPresenter(repository: MoviesRepository, composite: CompositeDisposable): SearchMoviesInteractor.Presenter
+    fun provideSearchMoviesPresenter(repository: MovieRepository, composite: CompositeDisposable): SearchMoviesInteractor.Presenter
     {
         return SearchMoviesPresenter(repository, composite)
     }

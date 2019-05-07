@@ -3,7 +3,7 @@ package com.dao.mymovies.features.search.paging
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.dao.mymovies.R
-import com.dao.mymovies.data.repository.MoviesRepository
+import com.dao.mymovies.data.MovieRepository
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.network.NetworkState
 import com.dao.mymovies.network.State
@@ -26,7 +26,7 @@ import javax.inject.Inject
 class SearchPageKeyedDataSource @Inject constructor(
         private val query: String,
         private val composite: CompositeDisposable,
-        private val repository: MoviesRepository) : PageKeyedDataSource<Int, Movie>()
+        private val repository: MovieRepository) : PageKeyedDataSource<Int, Movie>()
 {
     val networkState = MutableLiveData<NetworkState>()
 

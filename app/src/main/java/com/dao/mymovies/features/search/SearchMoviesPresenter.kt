@@ -6,7 +6,7 @@ import androidx.lifecycle.Transformations.map
 import androidx.lifecycle.Transformations.switchMap
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.dao.mymovies.data.repository.MoviesRepository
+import com.dao.mymovies.data.MovieRepository
 import com.dao.mymovies.features.search.paging.SearchDataSourceFactory
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.network.NetworkState
@@ -18,7 +18,7 @@ import io.reactivex.disposables.CompositeDisposable
  * @author Diogo Oliveira.
  */
 class SearchMoviesPresenter(
-        private val repository: MoviesRepository,
+        private val repository: MovieRepository,
         private val composite: CompositeDisposable) : SearchMoviesInteractor.Presenter
 {
     private lateinit var view: SearchMoviesInteractor.View

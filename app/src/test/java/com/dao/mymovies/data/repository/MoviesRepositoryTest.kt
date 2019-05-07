@@ -1,8 +1,8 @@
 package com.dao.mymovies.data.repository
 
 import androidx.paging.DataSource
-import com.dao.mymovies.data.local.MoviesLocalDataSource
-import com.dao.mymovies.data.remote.MoviesRemoteDataSource
+import com.dao.mymovies.data.local.IMoviesLocalDataSource
+import com.dao.mymovies.data.remote.IMoviesRemoteDataSource
 import com.dao.mymovies.model.Movie
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -25,18 +25,18 @@ import retrofit2.Response
 class MoviesRepositoryTest
 {
     @Mock
-    private lateinit var local: MoviesLocalDataSource
+    private lateinit var local: IMoviesLocalDataSource
     @Mock
-    private lateinit var remote: MoviesRemoteDataSource
+    private lateinit var remote: IMoviesRemoteDataSource
 
-    private lateinit var repository: MoviesRepository
+    private lateinit var repository: IMoviesRepository
     private lateinit var movie: Movie
 
     @Before
     fun setUp()
     {
         MockitoAnnotations.initMocks(this)
-        repository = MoviesRepository(local, remote)
+        repository = IMoviesRepository(local, remote)
         movie = mock(Movie::class.java)
     }
 
@@ -64,9 +64,9 @@ class MoviesRepositoryTest
     fun `load movies`()
     {
         val dataSourceFactory = mock(DataSource.Factory::class.java)
-        doReturn(dataSourceFactory).`when`(local).loadMovies()
+        doReturn(dataSourceFactory).`when`(local).getMovies()
 
-        assertThat(repository.loadMovies(), `is`(dataSourceFactory))
+        assertThat(repository.getMovies(), `is`(dataSourceFactory))
     }
 
     @Test
