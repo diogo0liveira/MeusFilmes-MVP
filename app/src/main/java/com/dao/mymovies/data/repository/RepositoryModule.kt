@@ -18,7 +18,6 @@ import javax.inject.Singleton
 class RepositoryModule
 {
     @Provides
-    @Singleton
     fun provideMovieRepository(local: MovieLocalDataSource, remote: MovieRemoteDataSource): MovieRepository
     {
         return IMoviesRepository(local, remote)

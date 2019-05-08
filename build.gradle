@@ -43,9 +43,9 @@ ext {
     constraintlayoutVersion = '2.0.0-alpha5'
     coordinatorlayoutVersion = '1.1.0-alpha01'
 
-    roomRuntimeVersion = '2.1.0-alpha07'
-    roomRxjava2Version = '2.1.0-alpha07'
-    roomCompilerVersion = '2.1.0-alpha07'
+    roomRuntimeVersion = '2.1.0-beta01'
+    roomRxjava2Version = '2.1.0-beta01'
+    roomCompilerVersion = '2.1.0-beta01'
 
     /* External */
     daggerVersion = '2.22.1'
@@ -63,7 +63,7 @@ ext {
     testRunnerVersion = '1.2.0-alpha04'
 
     runnerVersion = '1.1.1'
-    coreTesting = '2.1.0-alpha01'
+    coreTesting = '2.1.0-beta01'
 
     junitVersion = '4.13-beta-2'
     extJunitVersion = '1.1.1-alpha04'
