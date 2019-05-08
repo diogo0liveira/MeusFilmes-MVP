@@ -29,8 +29,6 @@ interface SearchMoviesInteractor
 
     interface Presenter : IPresenter<View>
     {
-        fun networkStateObserver(): LiveData<NetworkState>?
-
         fun searchObserver(): LiveData<PagedList<Movie>>
 
         fun searchMovies(query: String)

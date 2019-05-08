@@ -56,6 +56,10 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8
     }
 
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
     androidExtensions {
         experimental = true
     }

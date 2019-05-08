@@ -3,6 +3,7 @@ package com.dao.mymovies.features.list
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
+import com.dao.mymovies.MovieFactory
 import com.dao.mymovies.data.repository.FakeMoviesRepository
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.model.Order
@@ -61,8 +62,8 @@ class MyMoviesPresenterTest
     @Test
     fun `movies order by title`()
     {
-        val movie1 = Movie(1, "A Title", null, 5.0F, "OverView", null)
-        val movie2 = Movie(2, "B Title", null, 5.0F, "OverView", null)
+        val movie1 = MovieFactory.build(1, "B Title")
+        val movie2 = MovieFactory.build(2, "A Title")
 
         val movies = listOf(movie1, movie2).sortedBy { movie -> movie.title }
         repository.save(movie1)
@@ -79,8 +80,8 @@ class MyMoviesPresenterTest
         val date1 = SimpleDateFormat("dd/MM/yyyy").parse("07/12/2016")
         val date2 = SimpleDateFormat("dd/MM/yyyy").parse("09/11/2010")
 
-        val movie1 = Movie(1, "A Title", date1, 5.0F, "OverView", null)
-        val movie2 = Movie(2, "B Title", date2, 5.0F, "OverView", null)
+        val movie1 = MovieFactory.build(1, "A Title", releaseDate = date1)
+        val movie2 = MovieFactory.build(2, "B Title", releaseDate = date2)
 
         val movies = listOf(movie1, movie2).sortedBy { movie -> movie.releaseDate }
         repository.save(movie1)

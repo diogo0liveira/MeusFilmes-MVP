@@ -9,7 +9,6 @@ import androidx.paging.PagedList
 import com.dao.mymovies.data.MovieRepository
 import com.dao.mymovies.features.search.paging.SearchDataSourceFactory
 import com.dao.mymovies.model.Movie
-import com.dao.mymovies.network.NetworkState
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -26,17 +25,11 @@ class SearchMoviesPresenter(
     private val query = MutableLiveData<String>()
     private val search = map(query) { searchDataSourceFactory(it) }
     private val searchObserver: LiveData<PagedList<Movie>> = switchMap(search) { it }
-    private var networkStateObserver: LiveData<NetworkState>? = null
 
     override fun initialize(view: SearchMoviesInteractor.View)
     {
         this.view = view
         this.view.initializeView()
-    }
-
-    override fun networkStateObserver(): LiveData<NetworkState>?
-    {
-        return networkStateObserver
     }
 
     override fun searchObserver(): LiveData<PagedList<Movie>>
