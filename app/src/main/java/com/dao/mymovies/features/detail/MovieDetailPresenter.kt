@@ -63,8 +63,8 @@ class MovieDetailPresenter(
     {
       val disposable = repository.save(movie)
               .compose(withSchedulers<CompletableTransformer>())
-              .subscribe({changeMovieFavorite(true)},
-                         {view.showToast(R.string.app_internal_error_client, Toast.LENGTH_LONG)})
+              .subscribe({ changeMovieFavorite(true) },
+                         { view.showToast(R.string.app_internal_error_client, Toast.LENGTH_LONG) })
 
         composite.add(disposable)
     }
@@ -88,7 +88,7 @@ class MovieDetailPresenter(
     private fun isFavorite(block: (favorite: Boolean) -> Unit)
     {
         val consumer = Consumer<Boolean> { block(it) }
-        val error = Consumer<Throwable> { view.showToast(R.string.app_internal_error_client, Toast.LENGTH_LONG) }
+        val error = Consumer<Throwable>  { view.showToast(R.string.app_internal_error_client, Toast.LENGTH_LONG) }
 
         val disposable = repository.isFavorite(movie)
                 .compose(withSchedulers<SingleTransformer<Boolean, Boolean>>())

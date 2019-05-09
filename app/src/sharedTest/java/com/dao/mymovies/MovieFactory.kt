@@ -21,3 +21,6 @@ object MovieFactory
         return Movie(id, title, releaseDate, voteAverage, overView, cover)
     }
 }
+
+const val TITLE_A = "A Title"
+const val TITLE_B = "B Title"

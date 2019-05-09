@@ -1,13 +1,24 @@
 package com.dao.mymovies.features.detail
 
+import android.os.Bundle
+import android.widget.Toast
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.dao.mymovies.Extras.MOVIE
+import com.dao.mymovies.MovieFactory
+import com.dao.mymovies.R
 import com.dao.mymovies.data.repository.FakeMoviesRepository
+import com.dao.mymovies.model.Movie
+import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.Is.`is`
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 
 /**
@@ -21,10 +32,18 @@ class MovieDetailPresenterTest
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Mock
+    private lateinit var composite: CompositeDisposable
+    @Mock
     private lateinit var view: MovieDetailInteractor.View
 
     private lateinit var presenter: MovieDetailPresenter
     private lateinit var repository: FakeMoviesRepository
+
+    init
+    {
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+    }
 
     @Before
     fun setUp()
@@ -32,7 +51,7 @@ class MovieDetailPresenterTest
         MockitoAnnotations.initMocks(this)
 
         repository = FakeMoviesRepository()
-        presenter = MovieDetailPresenter(repository, CompositeDisposable())
+        presenter = MovieDetailPresenter(repository, composite)
         presenter.initialize(view)
     }
 
@@ -42,49 +61,74 @@ class MovieDetailPresenterTest
         verify(view).initializeView()
     }
 
-//    @Test
-//    fun `save instance state`()
-//    {
-//        val movie = MovieFactory.build(1, releaseDate = Date(), cover = "")
-//
-//        var bundle = Bundle()
-//        bundle.putParcelable(MOVIE, movie)
-//        presenter.onRestoreInstanceState(bundle, false)
-//
-//        bundle = Bundle()
-//        presenter.onSaveInstanceState(bundle)
-//        assertThat(bundle.getParcelable(MOVIE) as Movie, `is`(movie))
-//    }
+    @Test
+    fun `save instance state`()
+    {
+        val movie = MovieFactory.build(1)
+        val bundle = mock(Bundle::class.java)
 
-//    @Test
-//    fun `restore instance state`()
-//    {
-//        val movie = MovieFactory.build(1)
-//
-//        val bundle = Bundle()
-//        bundle.putParcelable(MOVIE, movie)
-//        presenter.onRestoreInstanceState(bundle, false)
-//        verify(view).putOnForm(movie)
-//    }
-//
-//    @Test
-//    fun `movie action`()
-//    {
-//        val movie = MovieFactory.build(1)
-//
-//        val bundle = Bundle()
-//        bundle.putParcelable(MOVIE, movie)
-//        presenter.onRestoreInstanceState(bundle, false)
-//
-//        presenter.movieAction()
-//        verify(repository).isFavorite(movie)
-//    }
-//
-//    @Test
-//    fun terminate()
-//    {
-//        val composite = CompositeDisposable()
-//        presenter.terminate()
-//        verify(composite).clear()
-//    }
+        doReturn(movie).`when`(bundle).getParcelable<Movie>(MOVIE)
+        presenter.onRestoreInstanceState(bundle, false)
+
+        presenter.onSaveInstanceState(bundle)
+        verify(bundle).putParcelable(MOVIE, movie)
+    }
+
+    @Test
+    fun `restore instance state`()
+    {
+        val movie = MovieFactory.build(1)
+        val bundle = mock(Bundle::class.java)
+
+        doReturn(movie).`when`(bundle).getParcelable<Movie>(MOVIE)
+        presenter.onRestoreInstanceState(bundle, false)
+        verify(view).putOnForm(movie)
+    }
+
+    @Test
+    fun `restore instance state empty`()
+    {
+        val bundle = null
+        presenter.onRestoreInstanceState(bundle, false)
+        verify(view).showToast(R.string.movie_detail_not_found, Toast.LENGTH_LONG)
+    }
+
+    @Test
+    fun `movie action is favorite`()
+    {
+        val movie = MovieFactory.build(1)
+        movie.isFavorite.set(false)
+
+        val bundle = mock(Bundle::class.java)
+        repository.movies = mutableListOf(movie)
+
+        doReturn(movie).`when`(bundle).getParcelable<Movie>(MOVIE)
+        presenter.onRestoreInstanceState(bundle, false)
+        presenter.movieAction()
+
+        assertThat(repository.movies.contains(movie), `is`(true))
+    }
+
+    @Test
+    fun `movie action not is favorite`()
+    {
+        val movie = MovieFactory.build(1)
+        movie.isFavorite.set(true)
+
+        val bundle = mock(Bundle::class.java)
+        repository.movies = mutableListOf(movie)
+
+        doReturn(movie).`when`(bundle).getParcelable<Movie>(MOVIE)
+        presenter.onRestoreInstanceState(bundle, false)
+        presenter.movieAction()
+
+        assertThat(repository.movies.contains(movie), `is`(false))
+    }
+
+    @Test
+    fun terminate()
+    {
+        presenter.terminate()
+        verify(composite).clear()
+    }
 }

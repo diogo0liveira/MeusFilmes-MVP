@@ -33,7 +33,7 @@ class FakeMoviesRepository : MovieRepository
 
     override fun isFavorite(movie: Movie): Single<Boolean>
     {
-        return Single.just(movie.isFavorite.get())
+        return Single.just(movies.find { it.id == movie.id }?.isFavorite?.get() ?: movie.isFavorite.get())
     }
 
     override fun getMovies(): DataSource.Factory<Int, Movie>
