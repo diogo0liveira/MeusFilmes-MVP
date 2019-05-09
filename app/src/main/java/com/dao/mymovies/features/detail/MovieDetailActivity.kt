@@ -89,7 +89,7 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
     {
         when(view.id)
         {
-            R.id.button_save ->
+            R.id.button_favorite ->
             {
                 presenter.movieAction()
             }
@@ -107,7 +107,7 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
             setHomeAsUpIndicator(drawableHomeIndicator)
         }
 
-        helper.buttonSave.setOnClickListener(this)
+        helper.buttonFavorite.setOnClickListener(this)
     }
 
     override fun putOnForm(movie: Movie)
