@@ -115,7 +115,7 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$daggerAndroidVersion"
     kapt "com.google.dagger:dagger-android-processor:$daggerAndroidVersion"
 
-    testImplementation "junit:junit:$junitVersion"
+//    testImplementation "junit:junit:$junitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoCoreVersion"
     testImplementation "androidx.arch.core:core-testing:$coreTesting"
 

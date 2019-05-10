@@ -10,19 +10,13 @@ import retrofit2.Response
  *
  * @author Diogo Oliveira.
  */
-class FakeMoviesRemoteDataSource(private val movies: MutableList<Movie>) : MovieRemoteDataSource
+class FakeMoviesRemoteDataSource : MovieRemoteDataSource
 {
+    private val movies: MutableList<Movie> = mutableListOf()
+
     override fun search(query: String, page: Int): Observable<Response<SearchResult>>
     {
-        val response: Response<SearchResult> = if(query.isEmpty())
-        {
-            Response.success(SearchResult(page, 0, 0, emptyList()))
-        }
-        else
-        {
-            Response.success(SearchResult(page, movies.size, (page + 1), movies))
-        }
-
-        return Observable.just(response)
+        val list = movies.filter { it.title.contains(query) }
+        return Observable.just(Response.success(SearchResult(1, list.size, 1, list)))
     }
 }

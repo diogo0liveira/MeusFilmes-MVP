@@ -6,6 +6,8 @@ import androidx.paging.PagedList
 import com.dao.mymovies.MovieFactory
 import com.dao.mymovies.TITLE_A
 import com.dao.mymovies.TITLE_B
+import com.dao.mymovies.data.local.FakeMoviesLocalDataSource
+import com.dao.mymovies.data.remote.FakeMoviesRemoteDataSource
 import com.dao.mymovies.data.repository.FakeMoviesRepository
 import com.dao.mymovies.model.Movie
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -52,7 +54,7 @@ class SearchMoviesPresenterTest
     {
         MockitoAnnotations.initMocks(this)
 
-        repository = FakeMoviesRepository()
+        repository = FakeMoviesRepository(FakeMoviesLocalDataSource(), FakeMoviesRemoteDataSource())
         presenter = SearchMoviesPresenter(repository, composite)
         presenter.initialize(view)
     }
@@ -66,8 +68,6 @@ class SearchMoviesPresenterTest
     @Test
     fun `search observer empty`()
     {
-        repository.movies = mutableListOf()
-
         presenter.searchObserver().observeForever(observer)
         assertThat(presenter.searchObserver().value.orEmpty(), `is`(emptyList()))
     }
@@ -75,8 +75,7 @@ class SearchMoviesPresenterTest
     @Test
     fun `search observer not empty`()
     {
-        val movie = MovieFactory.build(1)
-        repository.movies = mutableListOf(movie)
+        repository.save(MovieFactory.build(1))
 
         presenter.searchObserver().observeForever(observer)
         assertThat(presenter.searchObserver().value.orEmpty(), `is`(emptyList()))
@@ -89,7 +88,10 @@ class SearchMoviesPresenterTest
                 MovieFactory.build(1, TITLE_A),
                 MovieFactory.build(1, TITLE_B))
 
-        repository.movies = movies
+        repository.save(movies[0])
+        repository.save(movies[1])
+
+
         presenter.searchObserver().observeForever(observer)
 
         presenter.searchMovies("Title")

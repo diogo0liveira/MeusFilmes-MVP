@@ -11,12 +11,13 @@ import io.reactivex.Single
  *
  * @author Diogo Oliveira.
  */
-class FakeMoviesLocalDataSource(private val movies: MutableList<Movie>): MovieLocalDataSource
+class FakeMoviesLocalDataSource(
+        val movies: MutableList<Movie> = mutableListOf()): MovieLocalDataSource
 {
     override fun save(movie: Movie): Completable
     {
-        movies.add(movie)
-        return Completable.error(Throwable())
+        movies.remove(movie)
+        return Completable.complete()
     }
 
     override fun delete(movie: Movie): Completable
@@ -27,7 +28,7 @@ class FakeMoviesLocalDataSource(private val movies: MutableList<Movie>): MovieLo
 
     override fun isFavorite(movie: Movie): Single<Boolean>
     {
-        return Single.just(movie.isFavorite.get())
+        return Single.just(movies.find { it.id == movie.id }?.isFavorite?.get() ?: movie.isFavorite.get())
     }
 
     override fun getMovies(): DataSource.Factory<Int, Movie>

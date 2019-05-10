@@ -6,6 +6,8 @@ import androidx.paging.PagedList
 import com.dao.mymovies.MovieFactory
 import com.dao.mymovies.TITLE_A
 import com.dao.mymovies.TITLE_B
+import com.dao.mymovies.data.local.FakeMoviesLocalDataSource
+import com.dao.mymovies.data.remote.FakeMoviesRemoteDataSource
 import com.dao.mymovies.data.repository.FakeMoviesRepository
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.model.Order
@@ -43,7 +45,7 @@ class MyMoviesPresenterTest
     {
         MockitoAnnotations.initMocks(this)
 
-        repository = FakeMoviesRepository()
+        repository = FakeMoviesRepository(FakeMoviesLocalDataSource(), FakeMoviesRemoteDataSource())
         presenter = MyMoviesPresenter(repository)
         presenter.initialize(view)
     }
@@ -57,8 +59,6 @@ class MyMoviesPresenterTest
     @Test
     fun `movies observer empty`()
     {
-        repository.movies = mutableListOf()
-
         presenter.moviesObserver().observeForever(observer)
         assertThat(presenter.moviesObserver().value.orEmpty(), `is`(emptyList()))
     }
@@ -67,7 +67,7 @@ class MyMoviesPresenterTest
     fun `movies observer not empty`()
     {
         val movies = listOf(MovieFactory.build(1))
-        repository.movies = movies.toMutableList()
+        repository.save(movies[0])
 
         presenter.moviesObserver().observeForever(observer)
         assertThat(presenter.moviesObserver().value.orEmpty(), `is`(movies))

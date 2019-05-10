@@ -6,14 +6,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.dao.mymovies.Extras.MOVIE
 import com.dao.mymovies.MovieFactory
 import com.dao.mymovies.R
+import com.dao.mymovies.data.local.FakeMoviesLocalDataSource
+import com.dao.mymovies.data.remote.FakeMoviesRemoteDataSource
 import com.dao.mymovies.data.repository.FakeMoviesRepository
 import com.dao.mymovies.model.Movie
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.Is.`is`
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,7 +50,7 @@ class MovieDetailPresenterTest
     {
         MockitoAnnotations.initMocks(this)
 
-        repository = FakeMoviesRepository()
+        repository = FakeMoviesRepository(FakeMoviesLocalDataSource(), FakeMoviesRemoteDataSource())
         presenter = MovieDetailPresenter(repository, composite)
         presenter.initialize(view)
     }
@@ -100,13 +100,15 @@ class MovieDetailPresenterTest
         movie.isFavorite.set(false)
 
         val bundle = mock(Bundle::class.java)
-        repository.movies = mutableListOf(movie)
+        repository.save(movie)
 
         doReturn(movie).`when`(bundle).getParcelable<Movie>(MOVIE)
         presenter.onRestoreInstanceState(bundle, false)
         presenter.movieAction()
 
-        assertThat(repository.movies.contains(movie), `is`(true))
+        repository.isFavorite(movie)
+                .test()
+                .assertValue(true)
     }
 
     @Test
@@ -116,13 +118,14 @@ class MovieDetailPresenterTest
         movie.isFavorite.set(true)
 
         val bundle = mock(Bundle::class.java)
-        repository.movies = mutableListOf(movie)
-
         doReturn(movie).`when`(bundle).getParcelable<Movie>(MOVIE)
+
         presenter.onRestoreInstanceState(bundle, false)
         presenter.movieAction()
 
-        assertThat(repository.movies.contains(movie), `is`(false))
+        repository.isFavorite(movie)
+                .test()
+                .assertValue(false)
     }
 
     @Test
