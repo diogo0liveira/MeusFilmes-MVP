@@ -1,5 +1,6 @@
-package com.dao.mymovies.features.list
+package com.dao.mymovies.features.search
 
+import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -7,33 +8,48 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasShortClassName
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.LargeTest
 import com.dao.mymovies.MovieFactory
 import com.dao.mymovies.R
 import com.dao.mymovies.features.detail.MovieDetailActivity
-import com.dao.mymovies.features.search.SearchMoviesActivity
-import org.hamcrest.CoreMatchers.not
+import com.dao.mymovies.util.ToastMatcher
+import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@LargeTest
-@RunWith(AndroidJUnit4::class)
-class MyMoviesActivityTest
+/**
+ * Created in 10/05/19 14:43.
+ *
+ * @author Diogo Oliveira.
+ */
+class SearchMoviesActivityTest
 {
     @get:Rule
-    var activityScenarioRule = activityScenarioRule<MyMoviesActivity>()
+    var activityScenarioRule = activityScenarioRule<SearchMoviesActivity>()
 
     @Test
     fun initializeView()
     {
         val scenario = activityScenarioRule.scenario
         scenario.moveToState(Lifecycle.State.RESUMED)
-        onView(withId(R.id.movies_list)).check(matches(isDisplayed()))
+        onView(withId(R.id.search_list)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun onMovieViewOnClick()
+    {
+        val scenario = activityScenarioRule.scenario
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onActivity { activity ->
+            activity.onMovieViewOnClick(MovieFactory.build(1))
+        }
+
+        Intents.init()
+        intending(hasComponent(hasShortClassName(MovieDetailActivity::class.java.simpleName)))
+        Intents.release()
+        scenario.close()
     }
 
     @Test
@@ -63,36 +79,33 @@ class MyMoviesActivityTest
         onView(withId(R.id.message_empty)).check(matches(not(isDisplayed())))
         scenario.close()
     }
+//
+//    @Test
+//    fun executeRequireNetwork()
+//    {
+//    }
+//
+//    @Test
+//    fun networkStateObserver()
+//    {
+//    }
+//
+//    @Test
+//    fun notifyError()
+//    {
+//    }
 
     @Test
-    fun onMovieViewOnClick()
+    fun showToast()
     {
         val scenario = activityScenarioRule.scenario
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onActivity { activity ->
-            activity.onMovieViewOnClick(MovieFactory.build(1))
+            activity.showToast(R.string.app_internal_error_client, Toast.LENGTH_LONG)
         }
 
-        Intents.init()
-        intending(hasComponent(hasShortClassName(MovieDetailActivity::class.java.simpleName)))
-        Intents.release()
-        scenario.close()
-    }
-
-    @Test
-    fun startSearchMoviesActivity()
-    {
-        val scenario = activityScenarioRule.scenario
-        scenario.moveToState(Lifecycle.State.RESUMED)
-
-        scenario.onActivity { activity ->
-            activity.startSearchMoviesActivity()
-        }
-
-        Intents.init()
-        intending(hasComponent(hasShortClassName(SearchMoviesActivity::class.java.simpleName)))
-        Intents.release()
+        onView(withText(R.string.app_internal_error_client)).inRoot(ToastMatcher()).check(matches(isDisplayed()))
         scenario.close()
     }
 }

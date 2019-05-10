@@ -23,6 +23,7 @@
             android:visibility="@{showProgressBar}"/>
 
         <TextView
+            android:id="@+id/message_empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/vd_empty_search_120dp"
