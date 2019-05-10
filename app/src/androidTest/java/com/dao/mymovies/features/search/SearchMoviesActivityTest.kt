@@ -6,6 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
 import com.dao.mymovies.MovieFactory
@@ -13,6 +14,7 @@ import com.dao.mymovies.R
 import com.dao.mymovies.data.local.FakeMoviesLocalDataSource
 import com.dao.mymovies.data.remote.FakeMoviesRemoteDataSource
 import com.dao.mymovies.data.repository.FakeMoviesRepository
+import com.dao.mymovies.features.adapter.MyMoviesAdapter
 import com.dao.mymovies.util.ToastMatcher
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.disposables.CompositeDisposable
@@ -53,8 +55,8 @@ class SearchMoviesActivityTest
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onActivity { activity ->
-            val repository = FakeMoviesRepository(FakeMoviesLocalDataSource(), FakeMoviesRemoteDataSource())
-            repository.save(MovieFactory.build(1))
+            val remote = FakeMoviesRemoteDataSource(mutableListOf(MovieFactory.build(1)))
+            val repository = FakeMoviesRepository(FakeMoviesLocalDataSource(), remote)
 
             val presenter = SearchMoviesPresenter(repository, CompositeDisposable())
             activity.presenter = presenter
@@ -65,7 +67,7 @@ class SearchMoviesActivityTest
         onView(matcher).perform(typeText("Title"), closeSoftKeyboard())
         onView(matcher).perform(pressImeActionButton())
 
-//        onView(withId(R.id.search_list)).perform(actionOnItemAtPosition<MyMoviesAdapter.ViewHolder>(0, click()))
+        onView(withId(R.id.search_list)).perform(actionOnItemAtPosition<MyMoviesAdapter.ViewHolder>(0, click()))
 
 //        Intents.init()
 //        intending(hasComponent(hasShortClassName(MovieDetailActivity::class.java.simpleName)))
