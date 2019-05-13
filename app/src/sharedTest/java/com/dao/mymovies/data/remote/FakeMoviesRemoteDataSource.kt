@@ -4,15 +4,19 @@ import com.dao.mymovies.model.Movie
 import com.dao.mymovies.pojo.SearchResult
 import io.reactivex.Observable
 import retrofit2.Response
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Created in 07/05/19 10:37.
  *
  * @author Diogo Oliveira.
  */
-class FakeMoviesRemoteDataSource(
-        private val movies: MutableList<Movie> = mutableListOf()) : MovieRemoteDataSource
+@Singleton
+class FakeMoviesRemoteDataSource @Inject constructor() : MovieRemoteDataSource
 {
+    val movies: MutableList<Movie> = mutableListOf()
+
     override fun search(query: String, page: Int): Observable<Response<SearchResult>>
     {
         val list = movies.filter { it.title.contains(query) }

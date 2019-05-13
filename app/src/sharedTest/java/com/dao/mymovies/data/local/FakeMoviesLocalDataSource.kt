@@ -5,15 +5,19 @@ import androidx.paging.PageKeyedDataSource
 import com.dao.mymovies.model.Movie
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Created in 07/05/19 10:30.
  *
  * @author Diogo Oliveira.
  */
-class FakeMoviesLocalDataSource(
-        val movies: MutableList<Movie> = mutableListOf()): MovieLocalDataSource
+@Singleton
+class FakeMoviesLocalDataSource @Inject constructor() : MovieLocalDataSource
 {
+    var movies: MutableList<Movie> = mutableListOf()
+
     override fun save(movie: Movie): Completable
     {
         movies.remove(movie)
@@ -28,7 +32,7 @@ class FakeMoviesLocalDataSource(
 
     override fun isFavorite(movie: Movie): Single<Boolean>
     {
-        return Single.just(movies.find { it.id == movie.id }?.isFavorite?.get() ?: movie.isFavorite.get())
+        return Single.just(movies.contains(movie))
     }
 
     override fun getMovies(): DataSource.Factory<Int, Movie>
@@ -51,9 +55,8 @@ class FakeMoviesLocalDataSource(
 
                     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>)
                     {
-                        TODO("not implemented")
+                        /* not implemented */
                     }
-
                 }
             }
         }

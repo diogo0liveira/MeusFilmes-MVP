@@ -13,7 +13,7 @@ import com.dao.mymovies.MovieFactory
 import com.dao.mymovies.R
 import com.dao.mymovies.data.local.FakeMoviesLocalDataSource
 import com.dao.mymovies.data.remote.FakeMoviesRemoteDataSource
-import com.dao.mymovies.data.repository.FakeMoviesRepository
+import com.dao.mymovies.data.repository.FakeMovieRepository
 import com.dao.mymovies.features.adapter.MyMoviesAdapter
 import com.dao.mymovies.util.ToastMatcher
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -51,16 +51,40 @@ class SearchMoviesActivityTest
     @Test
     fun onMovieViewOnClick()
     {
+//        val scenario = activityScenarioRule.scenario
+//        scenario.moveToState(Lifecycle.State.RESUMED)
+//
+//        scenario.onActivity { activity ->
+//            val remote = FakeMoviesRemoteDataSource(mutableListOf(MovieFactory.build(1)))
+//            val repository = FakeMovieRepository(FakeMoviesLocalDataSource(), remote)
+//
+//            val presenter = SearchMoviesPresenter(repository, CompositeDisposable())
+//            activity.presenter = presenter
+//            presenter.initialize(activity)
+//        }
+//
+//        val matcher = isAssignableFrom(SearchView.SearchAutoComplete::class.java)
+//        onView(matcher).perform(typeText("Title"), closeSoftKeyboard())
+//        onView(matcher).perform(pressImeActionButton())
+//
+//        onView(withId(R.id.search_list)).perform(actionOnItemAtPosition<MyMoviesAdapter.ViewHolder>(0, click()))
+
+//        Intents.init()
+//        intending(hasComponent(hasShortClassName(MovieDetailActivity::class.java.simpleName)))
+//        Intents.release()
+//        scenario.close()
+
+
         val scenario = activityScenarioRule.scenario
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onActivity { activity ->
-            val remote = FakeMoviesRemoteDataSource(mutableListOf(MovieFactory.build(1)))
-            val repository = FakeMoviesRepository(FakeMoviesLocalDataSource(), remote)
-
-            val presenter = SearchMoviesPresenter(repository, CompositeDisposable())
-            activity.presenter = presenter
-            presenter.initialize(activity)
+//            val remote = FakeMoviesRemoteDataSource(mutableListOf(MovieFactory.build(1)))
+//            val repository = FakeMovieRepository(FakeMoviesLocalDataSource(), remote)
+//
+//            val presenter = SearchMoviesPresenter(repository, CompositeDisposable())
+//            activity.presenter = presenter
+//            presenter.initialize(activity)
         }
 
         val matcher = isAssignableFrom(SearchView.SearchAutoComplete::class.java)
@@ -68,11 +92,6 @@ class SearchMoviesActivityTest
         onView(matcher).perform(pressImeActionButton())
 
         onView(withId(R.id.search_list)).perform(actionOnItemAtPosition<MyMoviesAdapter.ViewHolder>(0, click()))
-
-//        Intents.init()
-//        intending(hasComponent(hasShortClassName(MovieDetailActivity::class.java.simpleName)))
-//        Intents.release()
-//        scenario.close()
     }
 
     @Test

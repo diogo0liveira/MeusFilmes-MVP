@@ -23,15 +23,17 @@ android {
         buildConfigField 'String', 'THEMOVIEDB_API_KEY', keystoreProperties['THEMOVIEDB_API_KEY']
     }
 
-    sourceSets {
-        String sharedTestDir = 'src/sharedTest/java'
+    android {
+        sourceSets {
+            String sharedTestDir = 'src/sharedTest/java'
 
-        test {
-            java.srcDir sharedTestDir
-        }
+            test {
+                java.srcDir sharedTestDir
+            }
 
-        androidTest {
-            java.srcDir sharedTestDir
+            androidTest {
+                java.srcDir sharedTestDir
+            }
         }
     }
 
@@ -43,6 +45,7 @@ android {
         }
 
         debug {
+            useProguard false
             testCoverageEnabled true
             applicationIdSuffix ".debug"
         }
@@ -58,8 +61,17 @@ android {
     }
 
     testOptions {
-        unitTests.returnDefaultValues = true
         animationsDisabled = true
+
+        unitTests {
+            unitTests.returnDefaultValues = true
+
+            all {
+                testLogging {
+                    events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+                }
+            }
+        }
     }
 
     androidExtensions {
@@ -68,6 +80,7 @@ android {
 
     dataBinding {
         enabled = true
+        enabledForTests = true
     }
 }
 
@@ -112,9 +125,11 @@ dependencies {
     implementation "com.google.dagger:dagger:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
-    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerAndroidVersion"
     kapt "com.google.dagger:dagger-android-processor:$daggerAndroidVersion"
+    
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
+    kaptAndroidTest "com.google.dagger:dagger-android-processor:$daggerAndroidVersion"
 
 //    testImplementation "junit:junit:$junitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoCoreVersion"

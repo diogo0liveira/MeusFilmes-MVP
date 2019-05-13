@@ -8,7 +8,7 @@ import com.dao.mymovies.TITLE_A
 import com.dao.mymovies.TITLE_B
 import com.dao.mymovies.data.local.FakeMoviesLocalDataSource
 import com.dao.mymovies.data.remote.FakeMoviesRemoteDataSource
-import com.dao.mymovies.data.repository.FakeMoviesRepository
+import com.dao.mymovies.data.repository.FakeMovieRepository
 import com.dao.mymovies.model.Movie
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.disposables.CompositeDisposable
@@ -41,7 +41,7 @@ class SearchMoviesPresenterTest
     private lateinit var observer: Observer<PagedList<Movie>>
 
     private lateinit var presenter: SearchMoviesPresenter
-    private lateinit var repository: FakeMoviesRepository
+    private lateinit var repository: FakeMovieRepository
 
     init
     {
@@ -54,7 +54,7 @@ class SearchMoviesPresenterTest
     {
         MockitoAnnotations.initMocks(this)
 
-        repository = FakeMoviesRepository(FakeMoviesLocalDataSource(), FakeMoviesRemoteDataSource())
+        repository = FakeMovieRepository(FakeMoviesLocalDataSource(), FakeMoviesRemoteDataSource())
         presenter = SearchMoviesPresenter(repository, composite)
         presenter.initialize(view)
     }

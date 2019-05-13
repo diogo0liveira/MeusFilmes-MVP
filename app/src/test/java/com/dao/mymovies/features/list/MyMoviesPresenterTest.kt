@@ -8,7 +8,7 @@ import com.dao.mymovies.TITLE_A
 import com.dao.mymovies.TITLE_B
 import com.dao.mymovies.data.local.FakeMoviesLocalDataSource
 import com.dao.mymovies.data.remote.FakeMoviesRemoteDataSource
-import com.dao.mymovies.data.repository.FakeMoviesRepository
+import com.dao.mymovies.data.repository.FakeMovieRepository
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.model.Order
 import org.hamcrest.CoreMatchers.`is`
@@ -35,7 +35,7 @@ class MyMoviesPresenterTest
     private lateinit var view: MyMoviesInteractor.View
     private lateinit var presenter: MyMoviesPresenter
 
-    private lateinit var repository: FakeMoviesRepository
+    private lateinit var repository: FakeMovieRepository
 
     @Mock
     private lateinit var observer: Observer<PagedList<Movie>>
@@ -45,7 +45,7 @@ class MyMoviesPresenterTest
     {
         MockitoAnnotations.initMocks(this)
 
-        repository = FakeMoviesRepository(FakeMoviesLocalDataSource(), FakeMoviesRemoteDataSource())
+        repository = FakeMovieRepository(FakeMoviesLocalDataSource(), FakeMoviesRemoteDataSource())
         presenter = MyMoviesPresenter(repository)
         presenter.initialize(view)
     }
