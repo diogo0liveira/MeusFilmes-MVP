@@ -60,7 +60,7 @@ ext {
 
     /* Test */
     runnerVersion = '1.1.1'
-    coreTesting = '2.1.0-beta01'
+    coreTesting = '2.0.0'
     testCoreVersion = '1.2.0-beta01'
 
     testRulesVersion = '1.2.0-beta01'

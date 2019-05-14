@@ -5,16 +5,13 @@ import androidx.paging.PageKeyedDataSource
 import com.dao.mymovies.model.Movie
 import io.reactivex.Completable
 import io.reactivex.Single
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Created in 07/05/19 10:30.
  *
  * @author Diogo Oliveira.
  */
-@Singleton
-class FakeMoviesLocalDataSource @Inject constructor() : MovieLocalDataSource
+class FakeMoviesLocalDataSource : MovieLocalDataSource
 {
     var movies: MutableList<Movie> = mutableListOf()
 

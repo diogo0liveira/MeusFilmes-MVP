@@ -7,8 +7,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasShortClassName
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -18,12 +17,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.dao.mymovies.MovieFactory
 import com.dao.mymovies.MyMoviesApplication
 import com.dao.mymovies.R
-import com.dao.mymovies.data.local.FakeMoviesLocalDataSource
-import com.dao.mymovies.data.remote.FakeMoviesRemoteDataSource
-import com.dao.mymovies.data.repository.FakeRepositoryModule
+import com.dao.mymovies.RepositoryFactory
 import com.dao.mymovies.di.DaggerTestAppComponent
 import com.dao.mymovies.features.adapter.MyMoviesAdapter
 import com.dao.mymovies.features.detail.MovieDetailActivity
+import com.dao.mymovies.features.search.SearchMoviesActivity
+import dagger.android.AndroidInjector
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
@@ -33,20 +32,15 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class MyMoviesActivityTest
 {
-//    @get:Rule
-//    var activityScenarioRule = ActivityScenarioRule<MyMoviesActivity>(MyMoviesActivity::class.java)
-
-    private lateinit var local: FakeMoviesLocalDataSource
-
     @Before
     fun setUp()
     {
-        local = FakeMoviesLocalDataSource()
-        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as MyMoviesApplication
-        app.injector.inject(app)
+        RepositoryFactory.local.movies = mutableListOf()
 
-        val module = FakeRepositoryModule(local, FakeMoviesRemoteDataSource())
-        DaggerTestAppComponent.factory().repositoryModule(module).inject(app)
+        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as MyMoviesApplication
+        val builder: AndroidInjector.Factory<MyMoviesApplication> = DaggerTestAppComponent.factory()
+        app.injector = builder.create(app)
+        app.injector.inject(app)
     }
 
     @Test
@@ -70,7 +64,7 @@ class MyMoviesActivityTest
     @Test
     fun onCollectionChanged_notEmpty()
     {
-        local.movies.add(MovieFactory.build(1))
+        RepositoryFactory.local.movies.add(MovieFactory.build(1))
 
         val scenario = launchActivity<MyMoviesActivity>()
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -82,32 +76,28 @@ class MyMoviesActivityTest
     @Test
     fun onMovieViewOnClick()
     {
-        local.movies.add(MovieFactory.build(1))
+        RepositoryFactory.local.movies.add(MovieFactory.build(1))
 
         val scenario = launchActivity<MyMoviesActivity>()
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        onView(withId(R.id.movies_list)).perform(actionOnItemAtPosition<MyMoviesAdapter.ViewHolder>(0, click()))
-
         Intents.init()
-        intending(hasComponent(hasShortClassName(MovieDetailActivity::class.java.simpleName)))
+        onView(withId(R.id.movies_list)).perform(actionOnItemAtPosition<MyMoviesAdapter.ViewHolder>(0, click()))
+        intended(hasComponent(MovieDetailActivity::class.java.name))
         Intents.release()
         scenario.close()
     }
 
-//    @Test
-//    fun startSearchMoviesActivity()
-//    {
-//        val scenario = launchActivity<MyMoviesActivity>()
-//        scenario.moveToState(Lifecycle.State.RESUMED)
-//
-//        scenario.onActivity { activity ->
-//            activity.startSearchMoviesActivity()
-//        }
-//
-//        Intents.init()
-//        intending(hasComponent(hasShortClassName(SearchMoviesActivity::class.java.simpleName)))
-//        Intents.release()
-//        scenario.close()
-//    }
+    @Test
+    fun startSearchMoviesActivity()
+    {
+        val scenario = launchActivity<MyMoviesActivity>()
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        Intents.init()
+        onView(withId(R.id.button_add)).perform(click())
+        intended(hasComponent(SearchMoviesActivity::class.java.name))
+        Intents.release()
+        scenario.close()
+    }
 }

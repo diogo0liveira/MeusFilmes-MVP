@@ -22,11 +22,11 @@ abstract class TestActivityBindingModule
     @ContributesAndroidInjector(modules = [TestMyMoviesModule::class])
     abstract fun bindTestMyMoviesActivity(): MyMoviesActivity
 
-//    @ActivityScoped
-//    @ContributesAndroidInjector(modules = [TestSearchMoviesModule::class])
-//    abstract fun bindTestSearchMoviesActivity(): SearchMoviesActivity
-//
-//    @ActivityScoped
-//    @ContributesAndroidInjector(modules = [TestMovieDetailModule::class])
-//    abstract fun bindTestMovieDetailActivity(): MovieDetailActivity
+    @ActivityScoped
+    @ContributesAndroidInjector(modules = [TestSearchMoviesModule::class])
+    abstract fun bindTestSearchMoviesActivity(): SearchMoviesActivity
+
+    @ActivityScoped
+    @ContributesAndroidInjector(modules = [TestMovieDetailModule::class])
+    abstract fun bindTestMovieDetailActivity(): MovieDetailActivity
 }

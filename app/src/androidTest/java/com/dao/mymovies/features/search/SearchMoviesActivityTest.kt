@@ -2,27 +2,38 @@ package com.dao.mymovies.features.search
 
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
+import androidx.test.platform.app.InstrumentationRegistry
 import com.dao.mymovies.MovieFactory
+import com.dao.mymovies.MyMoviesApplication
 import com.dao.mymovies.R
-import com.dao.mymovies.data.local.FakeMoviesLocalDataSource
-import com.dao.mymovies.data.remote.FakeMoviesRemoteDataSource
-import com.dao.mymovies.data.repository.FakeMovieRepository
+import com.dao.mymovies.RepositoryFactory
+import com.dao.mymovies.di.DaggerTestAppComponent
 import com.dao.mymovies.features.adapter.MyMoviesAdapter
+import com.dao.mymovies.features.detail.MovieDetailActivity
+import com.dao.mymovies.model.Movie
 import com.dao.mymovies.util.ToastMatcher
+import dagger.android.AndroidInjector
 import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito.*
+
 
 /**
  * Created in 10/05/19 14:43.
@@ -32,12 +43,27 @@ import org.junit.Test
 class SearchMoviesActivityTest
 {
     @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
     var activityScenarioRule = activityScenarioRule<SearchMoviesActivity>()
 
     init
     {
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+    }
+
+    @Before
+    fun setUp()
+    {
+        RepositoryFactory.remote.movies.clear()
+        RepositoryFactory.remote.movies = mutableListOf(MovieFactory.build(1))
+
+        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as MyMoviesApplication
+        val builder: AndroidInjector.Factory<MyMoviesApplication> = DaggerTestAppComponent.factory()
+        app.injector = builder.create(app)
+        app.injector.inject(app)
     }
 
     @Test
@@ -51,61 +77,27 @@ class SearchMoviesActivityTest
     @Test
     fun onMovieViewOnClick()
     {
-//        val scenario = activityScenarioRule.scenario
-//        scenario.moveToState(Lifecycle.State.RESUMED)
-//
-//        scenario.onActivity { activity ->
-//            val remote = FakeMoviesRemoteDataSource(mutableListOf(MovieFactory.build(1)))
-//            val repository = FakeMovieRepository(FakeMoviesLocalDataSource(), remote)
-//
-//            val presenter = SearchMoviesPresenter(repository, CompositeDisposable())
-//            activity.presenter = presenter
-//            presenter.initialize(activity)
-//        }
-//
-//        val matcher = isAssignableFrom(SearchView.SearchAutoComplete::class.java)
-//        onView(matcher).perform(typeText("Title"), closeSoftKeyboard())
-//        onView(matcher).perform(pressImeActionButton())
-//
-//        onView(withId(R.id.search_list)).perform(actionOnItemAtPosition<MyMoviesAdapter.ViewHolder>(0, click()))
-
-//        Intents.init()
-//        intending(hasComponent(hasShortClassName(MovieDetailActivity::class.java.simpleName)))
-//        Intents.release()
-//        scenario.close()
-
-
         val scenario = activityScenarioRule.scenario
         scenario.moveToState(Lifecycle.State.RESUMED)
-
-        scenario.onActivity { activity ->
-//            val remote = FakeMoviesRemoteDataSource(mutableListOf(MovieFactory.build(1)))
-//            val repository = FakeMovieRepository(FakeMoviesLocalDataSource(), remote)
-//
-//            val presenter = SearchMoviesPresenter(repository, CompositeDisposable())
-//            activity.presenter = presenter
-//            presenter.initialize(activity)
-        }
 
         val matcher = isAssignableFrom(SearchView.SearchAutoComplete::class.java)
         onView(matcher).perform(typeText("Title"), closeSoftKeyboard())
         onView(matcher).perform(pressImeActionButton())
 
+        Intents.init()
         onView(withId(R.id.search_list)).perform(actionOnItemAtPosition<MyMoviesAdapter.ViewHolder>(0, click()))
+        intended(hasComponent(MovieDetailActivity::class.java.name))
+        Intents.release()
     }
 
     @Test
     fun onCollectionChanged_empty()
     {
+        RepositoryFactory.remote.movies.clear()
+
         val scenario = activityScenarioRule.scenario
         scenario.moveToState(Lifecycle.State.RESUMED)
-
-        scenario.onActivity { activity ->
-            activity.onCollectionChanged(true)
-        }
-
         onView(withId(R.id.message_empty)).check(matches(isDisplayed()))
-        scenario.close()
     }
 
     @Test
@@ -114,12 +106,11 @@ class SearchMoviesActivityTest
         val scenario = activityScenarioRule.scenario
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        scenario.onActivity { activity ->
-            activity.onCollectionChanged(false)
-        }
+        val matcher = isAssignableFrom(SearchView.SearchAutoComplete::class.java)
+        onView(matcher).perform(typeText("Title"), closeSoftKeyboard())
+        onView(matcher).perform(pressImeActionButton())
 
         onView(withId(R.id.message_empty)).check(matches(not(isDisplayed())))
-        scenario.close()
     }
 //
 //    @Test
@@ -131,11 +122,43 @@ class SearchMoviesActivityTest
 //    fun networkStateObserver()
 //    {
 //    }
-//
-//    @Test
-//    fun notifyError()
-//    {
-//    }
+
+    @Test
+    fun notifyError()
+    {
+        val scenario = activityScenarioRule.scenario
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onActivity { activity ->
+            activity.notifyError(R.string.app_internal_no_connection) {}
+        }
+
+        onView(withId(R.id.progressBar)).check(matches(not(isDisplayed())))
+
+        onView(allOf(withId(com.google.android.material.R.id.snackbar_text),
+                withText(R.string.app_internal_no_connection))).check(matches(isDisplayed()))
+
+//        withText(R.string.app_internal_no_connection)
+//                .matches(allOf(isDescendantOfA(isAssignableFrom(Snackbar.SnackbarLayout::class.java)), isCompletelyDisplayed()))
+    }
+
+    @Test
+    fun notifyError_action()
+    {
+        val scenario = activityScenarioRule.scenario
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        val block: () -> Unit = {}
+
+        val callback = mock<(Array<Movie>) -> Unit>()
+
+        scenario.onActivity { activity ->
+            activity.notifyError(R.string.app_internal_no_connection, block)
+        }
+
+        onView(allOf(withId(com.google.android.material.R.id.snackbar_action))).perform(click())
+        verify(block).invoke()
+    }
 
     @Test
     fun showToast()
@@ -148,6 +171,5 @@ class SearchMoviesActivityTest
         }
 
         onView(withText(R.string.app_internal_error_client)).inRoot(ToastMatcher()).check(matches(isDisplayed()))
-        scenario.close()
     }
 }
