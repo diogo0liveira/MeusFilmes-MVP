@@ -45,7 +45,6 @@ android {
         }
 
         debug {
-            useProguard false
             testCoverageEnabled true
             applicationIdSuffix ".debug"
         }

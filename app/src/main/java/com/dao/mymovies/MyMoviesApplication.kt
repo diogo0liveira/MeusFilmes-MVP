@@ -31,7 +31,8 @@ open class MyMoviesApplication : DaggerApplication()
 {
     lateinit var injector: AndroidInjector<MyMoviesApplication>
 
-    override fun onCreate() {
+    override fun onCreate()
+    {
         injector = DaggerAppComponent.factory().create(this)
         super.onCreate()
 
@@ -39,7 +40,8 @@ open class MyMoviesApplication : DaggerApplication()
         BuildConfig.DEBUG.let { SQLiteStudioService.instance().start(this) }
     }
 
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication>
+    {
         return injector
     }
 }
