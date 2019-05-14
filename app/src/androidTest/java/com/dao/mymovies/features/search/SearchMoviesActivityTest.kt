@@ -4,6 +4,8 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -14,14 +16,11 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.dao.mymovies.MovieFactory
-import com.dao.mymovies.MyMoviesApplication
-import com.dao.mymovies.R
-import com.dao.mymovies.RepositoryFactory
+import com.dao.mymovies.*
 import com.dao.mymovies.di.DaggerTestAppComponent
 import com.dao.mymovies.features.adapter.MyMoviesAdapter
 import com.dao.mymovies.features.detail.MovieDetailActivity
-import com.dao.mymovies.model.Movie
+import com.dao.mymovies.network.NetworkState
 import com.dao.mymovies.util.ToastMatcher
 import dagger.android.AndroidInjector
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -32,8 +31,7 @@ import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.*
-
+import org.mockito.Mockito.verify
 
 /**
  * Created in 10/05/19 14:43.
@@ -117,11 +115,51 @@ class SearchMoviesActivityTest
 //    fun executeRequireNetwork()
 //    {
 //    }
-//
-//    @Test
-//    fun networkStateObserver()
-//    {
-//    }
+
+    @Test
+    fun networkStateObserver_running()
+    {
+        RepositoryFactory.remote.movies.clear()
+        val scenario = activityScenarioRule.scenario
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onActivity { activity ->
+            val liveData = MutableLiveData<NetworkState>().apply { value = NetworkState.RUNNING }
+            activity.networkStateObserver(liveData)
+        }
+
+        onView(withId(R.id.progressBar)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun networkStateObserver_success()
+    {
+        val scenario = activityScenarioRule.scenario
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onActivity { activity ->
+            val liveData = MutableLiveData<NetworkState>().apply { value = NetworkState.SUCCESS }
+            activity.networkStateObserver(liveData)
+        }
+
+        onView(withId(R.id.progressBar)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun networkStateObserver_failed()
+    {
+        val scenario = activityScenarioRule.scenario
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        val block: () -> Unit = mock()
+
+        scenario.onActivity { activity ->
+            val liveData = MutableLiveData<NetworkState>().apply { value = NetworkState.error("", block) }
+            activity.networkStateObserver(liveData)
+        }
+
+        verify(block).invoke()
+    }
 
     @Test
     fun notifyError()
@@ -137,9 +175,6 @@ class SearchMoviesActivityTest
 
         onView(allOf(withId(com.google.android.material.R.id.snackbar_text),
                 withText(R.string.app_internal_no_connection))).check(matches(isDisplayed()))
-
-//        withText(R.string.app_internal_no_connection)
-//                .matches(allOf(isDescendantOfA(isAssignableFrom(Snackbar.SnackbarLayout::class.java)), isCompletelyDisplayed()))
     }
 
     @Test
@@ -148,15 +183,13 @@ class SearchMoviesActivityTest
         val scenario = activityScenarioRule.scenario
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        val block: () -> Unit = {}
-
-        val callback = mock<(Array<Movie>) -> Unit>()
+        val block: () -> Unit = mock()
 
         scenario.onActivity { activity ->
             activity.notifyError(R.string.app_internal_no_connection, block)
         }
 
-        onView(allOf(withId(com.google.android.material.R.id.snackbar_action))).perform(click())
+        onView(allOf(withId(com.google.android.material.R.id.snackbar_action))).perform(closeSoftKeyboard(), click())
         verify(block).invoke()
     }
 
