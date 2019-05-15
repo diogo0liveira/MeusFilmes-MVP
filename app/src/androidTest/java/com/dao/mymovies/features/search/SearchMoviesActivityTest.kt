@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -32,6 +31,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.verify
+
 
 /**
  * Created in 10/05/19 14:43.
@@ -110,11 +110,12 @@ class SearchMoviesActivityTest
 
         onView(withId(R.id.message_empty)).check(matches(not(isDisplayed())))
     }
-//
-//    @Test
-//    fun executeRequireNetwork()
-//    {
-//    }
+
+    @Test
+    fun executeRequireNetwork()
+    {
+
+    }
 
     @Test
     fun networkStateObserver_running()
