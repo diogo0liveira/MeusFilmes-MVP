@@ -32,7 +32,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.verify
 
-
 /**
  * Created in 10/05/19 14:43.
  *
@@ -109,12 +108,6 @@ class SearchMoviesActivityTest
         onView(matcher).perform(pressImeActionButton())
 
         onView(withId(R.id.message_empty)).check(matches(not(isDisplayed())))
-    }
-
-    @Test
-    fun executeRequireNetwork()
-    {
-
     }
 
     @Test
