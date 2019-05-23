@@ -33,12 +33,11 @@ class MyMoviesPresenterTest
 
     @Mock
     private lateinit var view: MyMoviesInteractor.View
-    private lateinit var presenter: MyMoviesPresenter
-
-    private lateinit var repository: FakeMovieRepository
-
     @Mock
     private lateinit var observer: Observer<PagedList<Movie>>
+
+    private lateinit var presenter: MyMoviesPresenter
+    private lateinit var repository: FakeMovieRepository
 
     @Before
     fun setUp()

@@ -27,11 +27,11 @@ android {
         sourceSets {
             String sharedTestDir = 'src/sharedTest/java'
 
-            test {
+            androidTest {
                 java.srcDir sharedTestDir
             }
 
-            androidTest {
+            test {
                 java.srcDir sharedTestDir
             }
         }
@@ -50,15 +50,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
-    }
-
     testOptions {
         animationsDisabled = true
 
@@ -71,6 +62,15 @@ android {
                 }
             }
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 
     androidExtensions {
