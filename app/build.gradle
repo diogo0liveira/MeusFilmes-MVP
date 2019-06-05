@@ -142,8 +142,8 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit-ktx:$extJunitVersion"
     androidTestImplementation "androidx.test.ext:truth:$extTruthVersion"
     androidTestImplementation "androidx.arch.core:core-testing:$coreTesting"
-
     androidTestImplementation "org.mockito:mockito-android:$mockitoAndroidVersion"
+
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCoreVersion"
     androidTestImplementation "androidx.test.espresso:espresso-intents:$espressoCoreVersion"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoCoreVersion"
