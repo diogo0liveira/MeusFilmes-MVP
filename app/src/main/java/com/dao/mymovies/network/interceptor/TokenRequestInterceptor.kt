@@ -16,10 +16,10 @@ class TokenRequestInterceptor : Interceptor
 {
     override fun intercept(chain: Interceptor.Chain): Response
     {
-        if(!chain.request().url().encodedPath().contains(KeyParameter.API_KEY))
+        if(!chain.request().url.encodedPath.contains(KeyParameter.API_KEY))
         {
             val request: Request = chain.request()
-            val url: HttpUrl = request.url().newBuilder().addQueryParameter(KeyParameter.API_KEY, TheMovieApi.KEY).build()
+            val url: HttpUrl = request.url.newBuilder().addQueryParameter(KeyParameter.API_KEY, TheMovieApi.KEY).build()
             val requestBuilder: Request.Builder = request.newBuilder().url(url)
             return chain.proceed(requestBuilder.build())
         }

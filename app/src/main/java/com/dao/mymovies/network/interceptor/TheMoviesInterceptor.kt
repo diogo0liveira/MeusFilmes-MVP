@@ -16,10 +16,10 @@ class TheMoviesInterceptor : Interceptor
 {
     override fun intercept(chain: Interceptor.Chain): Response
     {
-        if(chain.request().url().toString().startsWith(TheMovieApi.SEARCH))
+        if(chain.request().url.toString().startsWith(TheMovieApi.SEARCH))
         {
             val request: Request = chain.request()
-            val url: HttpUrl = request.url().newBuilder().addQueryParameter(
+            val url: HttpUrl = request.url.newBuilder().addQueryParameter(
                     KeyParameter.LANGUAGE, "pt-BR&append_to_response=images&include_image_language=pt-BR,null").build()
 
             val requestBuilder: Request.Builder = request.newBuilder().url(url)

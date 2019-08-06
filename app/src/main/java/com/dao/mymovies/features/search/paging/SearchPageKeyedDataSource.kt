@@ -5,6 +5,7 @@ import androidx.paging.PageKeyedDataSource
 import com.dao.mymovies.R
 import com.dao.mymovies.data.MovieRepository
 import com.dao.mymovies.model.Movie
+import com.dao.mymovies.network.MediaType
 import com.dao.mymovies.network.NetworkState
 import com.dao.mymovies.network.State
 import com.dao.mymovies.pojo.SearchResult
@@ -13,8 +14,7 @@ import com.dao.mymovies.util.withSchedulers
 import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import okhttp3.MediaType
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -103,7 +103,7 @@ class SearchPageKeyedDataSource @Inject constructor(
     private fun unavailable(error: Throwable): Response<SearchResult>
     {
         Logger.e(error)
-        return Response.error(400, ResponseBody.create(MediaType.parse(""), error.message ?: ""))
+        return Response.error(400, (error.message ?: "").toResponseBody(MediaType.NONE))
     }
 
     private fun pagination(search: SearchResult): Map<String, Int?>

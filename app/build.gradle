@@ -18,22 +18,33 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 
-        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'THEMOVIEDB_API_KEY', keystoreProperties['THEMOVIEDB_API_KEY']
     }
 
-    android {
-        sourceSets {
-            String sharedTestDir = 'src/sharedTest/java'
+//    android {
+//        sourceSets {
+//            String sharedTestDir = 'src/sharedTest/java'
+//
+//            androidTest {
+//                java.srcDir sharedTestDir
+//            }
+//
+//            test {
+//                java.srcDir sharedTestDir
+//            }
+//        }
+//    }
 
-            androidTest {
-                java.srcDir sharedTestDir
-            }
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
 
-            test {
-                java.srcDir sharedTestDir
-            }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+
+        test {
+            java.srcDir sharedTestDir
         }
     }
 

@@ -2,8 +2,10 @@ package com.dao.mymovies.features.list
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
+import com.dao.mymovies.base.OnCollectionChangedListener
 import com.dao.mymovies.base.mvp.IPresenter
 import com.dao.mymovies.base.mvp.IView
+import com.dao.mymovies.features.adapter.MyMoviesAdapter
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.model.Order
 
@@ -14,7 +16,7 @@ import com.dao.mymovies.model.Order
  */
 interface MyMoviesInteractor
 {
-    interface View : IView
+    interface View : IView, OnCollectionChangedListener, MyMoviesAdapter.MovieViewOnClickListener
     {
         fun startSearchMoviesActivity()
     }

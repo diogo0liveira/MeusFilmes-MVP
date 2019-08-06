@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import androidx.core.graphics.drawable.DrawableCompat
 import com.google.android.material.animation.AnimationUtils
 import com.google.android.material.appbar.AppBarLayout
+import kotlin.math.abs
 
 /**
  * Created in 30/04/19 14:42.
@@ -40,18 +41,18 @@ class AppBarScrimLayout @JvmOverloads constructor(context: Context, attrs: Attri
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int)
     {
-        if(!verticalOffsetMatch && this.verticalOffset < Math.abs(verticalOffset) && Math.abs(verticalOffset) >= 198)
+        if(!verticalOffsetMatch && this.verticalOffset < abs(verticalOffset) && abs(verticalOffset) >= 198)
         {
             verticalOffsetMatch = true
             scrimChanged(true)
         }
-        else if(verticalOffsetMatch && this.verticalOffset > Math.abs(verticalOffset) && Math.abs(verticalOffset) <= 197)
+        else if(verticalOffsetMatch && this.verticalOffset > abs(verticalOffset) && abs(verticalOffset) <= 197)
         {
             verticalOffsetMatch = false
             scrimChanged(false)
         }
 
-        this.verticalOffset = Math.abs(verticalOffset)
+        this.verticalOffset = abs(verticalOffset)
     }
 
     private fun scrimChanged(showing: Boolean)

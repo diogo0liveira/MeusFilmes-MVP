@@ -3,6 +3,8 @@ package com.dao.mymovies.base
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
@@ -10,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.dao.mymovies.R
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjection
+
 
 /**
  * Created in 26/03/19 20:49.
@@ -29,8 +32,21 @@ open class BaseActivity : AppCompatActivity()
 
     protected fun isNetworkConnected(): Boolean
     {
-        val manager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return (manager.activeNetworkInfo != null) && manager.activeNetworkInfo.isConnected
+        val connectivity = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            val network = connectivity.activeNetwork
+            val capabilities = connectivity.getNetworkCapabilities(network) ?: return false
+            return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        }
+        else
+        {
+            @Suppress("DEPRECATION")
+            val networkInfo = connectivity.activeNetworkInfo ?: return false
+            @Suppress("DEPRECATION")
+            return networkInfo.isConnectedOrConnecting
+        }
     }
 
     protected fun showSnackNotify(anchor: View, @StringRes text: Int, block: () -> Unit)

@@ -51,7 +51,7 @@ class SearchMoviesPresenter(
     {
         val factory = SearchDataSourceFactory(query, composite, repository)
         val config = PagedList.Config.Builder().setPageSize(30).build()
-        val paged = LivePagedListBuilder<Int, Movie>(factory, config).build()
+        val paged = LivePagedListBuilder(factory, config).build()
 
         view.networkStateObserver(switchMap(factory.source) { it.networkState })
         return paged

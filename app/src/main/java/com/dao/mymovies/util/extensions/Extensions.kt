@@ -1,5 +1,6 @@
 package com.dao.mymovies.util.extensions
 
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.widget.ImageView
@@ -8,6 +9,7 @@ import androidx.palette.graphics.Palette
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.dao.mymovies.R
+import com.dao.mymovies.model.Order
 import com.dao.mymovies.util.GlideApp
 
 /**
@@ -33,3 +35,7 @@ fun Palette.contrastColor(): Int
     return if(ColorUtils.calculateLuminance(most?.rgb ?: Color.BLACK) > 0.5) Color.BLACK else Color.WHITE
 }
 
+fun SharedPreferences.getOrder(key: String, default: Order): Order
+{
+   return Order.valueOf(getString(key, null) ?: default.name)
+}

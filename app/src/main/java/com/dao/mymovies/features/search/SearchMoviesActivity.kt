@@ -35,7 +35,7 @@ import javax.inject.Inject
  *
  * @author Diogo Oliveira.
  */
-class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View, OnCollectionChangedListener, MyMoviesAdapter.MovieViewOnClickListener
+class SearchMoviesActivity : BaseActivity(), SearchMoviesInteractor.View
 {
     @Inject
     lateinit var presenter: SearchMoviesInteractor.Presenter

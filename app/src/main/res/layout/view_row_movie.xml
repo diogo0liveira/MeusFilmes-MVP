@@ -30,7 +30,7 @@
                 android:id="@+id/cover"
                 android:layout_width="65dp"
                 android:layout_height="0dp"
-                app:srcCompat="@drawable/vd_movie_24dp"
+                android:src="@drawable/vd_movie_24dp"
                 app:cover="@{movie.cover}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"

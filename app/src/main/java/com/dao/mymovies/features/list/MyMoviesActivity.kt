@@ -15,7 +15,6 @@ import com.dao.mymovies.R
 import com.dao.mymovies.REQUEST.REQUEST_DETAIL_MOVIE
 import com.dao.mymovies.REQUEST.REQUEST_SEARCH_MOVIES
 import com.dao.mymovies.SplashScreen
-import com.dao.mymovies.base.OnCollectionChangedListener
 import com.dao.mymovies.databinding.ActivityMyMoviesBinding
 import com.dao.mymovies.databinding.ViewEmptyMyMoviesBinding
 import com.dao.mymovies.features.adapter.MyMoviesAdapter
@@ -23,6 +22,7 @@ import com.dao.mymovies.features.detail.MovieDetailActivity
 import com.dao.mymovies.features.search.SearchMoviesActivity
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.model.Order
+import com.dao.mymovies.util.extensions.getOrder
 import org.jetbrains.anko.startActivityForResult
 import javax.inject.Inject
 
@@ -31,7 +31,7 @@ import javax.inject.Inject
  *
  * @author Diogo Oliveira.
  */
-class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickListener, OnCollectionChangedListener, MyMoviesAdapter.MovieViewOnClickListener
+class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickListener
 {
     @Inject
     lateinit var presenter: MyMoviesInteractor.Presenter
@@ -179,6 +179,6 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
 
     private fun getOrder(): Order
     {
-        return Order.valueOf(preferences.getString(KEY_ORDER, Order.TITLE.name)!!)
+        return preferences.getOrder(KEY_ORDER, Order.TITLE)
     }
 }
