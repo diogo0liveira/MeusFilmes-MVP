@@ -22,29 +22,17 @@ android {
         buildConfigField 'String', 'THEMOVIEDB_API_KEY', keystoreProperties['THEMOVIEDB_API_KEY']
     }
 
-//    android {
-//        sourceSets {
-//            String sharedTestDir = 'src/sharedTest/java'
-//
-//            androidTest {
-//                java.srcDir sharedTestDir
-//            }
-//
-//            test {
-//                java.srcDir sharedTestDir
-//            }
-//        }
-//    }
+    android {
+        sourceSets {
+            String sharedTestDir = 'src/sharedTest/java'
 
-    sourceSets {
-        String sharedTestDir = 'src/sharedTest/java'
+            androidTest {
+                java.srcDir sharedTestDir
+            }
 
-        androidTest {
-            java.srcDir sharedTestDir
-        }
-
-        test {
-            java.srcDir sharedTestDir
+            test {
+                java.srcDir sharedTestDir
+            }
         }
     }
 

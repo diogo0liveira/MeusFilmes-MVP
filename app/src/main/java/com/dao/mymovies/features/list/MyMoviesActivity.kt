@@ -23,6 +23,7 @@ import com.dao.mymovies.features.search.SearchMoviesActivity
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.model.Order
 import com.dao.mymovies.util.extensions.getOrder
+import com.dao.mymovies.util.extensions.getParcelable
 import org.jetbrains.anko.startActivityForResult
 import javax.inject.Inject
 
@@ -47,15 +48,7 @@ class MyMoviesActivity : SplashScreen(), MyMoviesInteractor.View, View.OnClickLi
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         helper = DataBindingUtil.setContentView(this, R.layout.activity_my_movies)
-
-        order = if(savedInstanceState == null)
-        {
-            getOrder()
-        }
-        else
-        {
-            savedInstanceState.getParcelable(KEY_ORDER)!!
-        }
+        order = savedInstanceState.getParcelable(KEY_ORDER, getOrder())
 
         presenter.moviesOrderBy(order)
         presenter.initialize(this)

@@ -17,7 +17,6 @@ import com.dao.mymovies.Extras.MOVIE
 import com.dao.mymovies.R
 import com.dao.mymovies.REQUEST.REQUEST_DETAIL_MOVIE
 import com.dao.mymovies.base.BaseActivity
-import com.dao.mymovies.base.OnCollectionChangedListener
 import com.dao.mymovies.databinding.ActivitySearchMoviesBinding
 import com.dao.mymovies.databinding.ViewEmptySearchMoviesBinding
 import com.dao.mymovies.features.adapter.MyMoviesAdapter

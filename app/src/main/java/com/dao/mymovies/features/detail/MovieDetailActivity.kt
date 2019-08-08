@@ -23,6 +23,7 @@ import com.dao.mymovies.databinding.ActivityMovieDetailBinding
 import com.dao.mymovies.model.Movie
 import com.dao.mymovies.util.Logger
 import com.dao.mymovies.util.extensions.contrastColor
+import com.dao.mymovies.util.extensions.drawable
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
 import javax.inject.Inject
@@ -99,7 +100,7 @@ class MovieDetailActivity : BaseActivity(), MovieDetailInteractor.View, View.OnC
     override fun initializeView()
     {
         setSupportActionBar(helper.toolbar)
-        drawableHomeIndicator = getDrawable(R.drawable.vd_arrow_back_24dp)!!
+        drawableHomeIndicator = drawable(R.drawable.vd_arrow_back_24dp)
         DrawableCompat.setTint(drawableHomeIndicator, Color.WHITE)
 
         supportActionBar?.apply {
