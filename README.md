@@ -15,6 +15,6 @@ Teste api "themoviedb".
 - Data Binding,
 - RxJava2, RxAndroid2 
 - Retrofit, OkHttp, OkHttp logging 
-- Gson
+- Moshi
 - Glide
 - Dagger 2 
